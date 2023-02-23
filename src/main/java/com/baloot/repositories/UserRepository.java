@@ -36,7 +36,7 @@ public class UserRepository {
         oldUser.setBirthDate(newUser.getBirthDate());
     }
 
-    private User findUser(String username){
+    public User findUser(String username){
         for (User u: users)
             if (Objects.equals(u.getUsername(), username))
                 return u;

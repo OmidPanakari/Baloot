@@ -1,4 +1,5 @@
 package com.baloot.entities;
+import com.baloot.responses.Response;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,11 +15,11 @@ public class User {
     @Getter @Setter
     private String address;
     @Getter @Setter
-    private String credit;
+    private int credit;
     @Getter
     private transient BuyList buyList;
 
-    public User(String username, String password, String birthDate, String email, String address, String credit){
+    public User(String username, String password, String birthDate, String email, String address, int credit){
         this.password = password;
         this.email = email;
         this.address = address;
@@ -26,6 +27,14 @@ public class User {
         this.username = username;
         this.birthDate = birthDate;
         buyList = new BuyList();
+    }
+
+    public Response<String> addToBuyList(Commodity commodity){
+        return buyList.addToBuyList(commodity);
+    }
+
+    public Response<String> removeFromBuyList(Commodity commodity){
+        return buyList.removeFromBuyList(commodity);
     }
 
 }

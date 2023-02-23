@@ -1,5 +1,6 @@
 package com.baloot.entities;
 
+import com.baloot.responses.Response;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -11,4 +12,23 @@ public class BuyList {
     }
     @Getter
     private List<Commodity> buyList;
+
+    public Response<String> addToBuyList(Commodity commodity){
+        for (Commodity c:buyList) {
+            if (commodity.getId() == c.getId())
+                return new Response<>(false, "Commodity already added!");
+        }
+        buyList.add(commodity);
+        return new Response<>(true, "Commodity added.");
+    }
+
+    public Response<String> removeFromBuyList(Commodity commodity) {
+        for (Commodity c:buyList) {
+            if (commodity.getId() == c.getId()){
+                buyList.remove(c);
+                return new Response<>(true, "Commodity removed!");
+            }
+        }
+        return new Response<>(false, "Commodity does not exist in this buy list.");
+    }
 }

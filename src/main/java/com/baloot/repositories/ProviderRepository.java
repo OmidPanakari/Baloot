@@ -23,7 +23,7 @@ public class ProviderRepository {
         return new Response<>(true, "Provider added.");
     }
 
-    private Provider findProvider(int id){
+    public Provider findProvider(int id){
         for (Provider p: providers)
             if (Objects.equals(p.getId(), id))
                 return p;
