@@ -3,6 +3,7 @@ package com.baloot.repositories;
 import com.baloot.entities.User;
 import com.baloot.responses.Response;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -10,6 +11,10 @@ import java.util.regex.Pattern;
 
 public class UserRepository {
     private List<User> users;
+
+    public UserRepository(){
+        users = new ArrayList<>();
+    }
 
     public Response<String> addUser(User user){
         if (!isUserValid(user)){
