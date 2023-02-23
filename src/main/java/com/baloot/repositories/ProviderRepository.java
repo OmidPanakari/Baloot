@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class ProviderRepository {
 
-    private List<Provider> providers;
+    private final List<Provider> providers;
     public ProviderRepository() {
         providers = new ArrayList<>();
     }

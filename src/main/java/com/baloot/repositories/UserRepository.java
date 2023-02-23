@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UserRepository {
-    private List<User> users;
+    private final List<User> users;
 
     public UserRepository(){
         users = new ArrayList<>();

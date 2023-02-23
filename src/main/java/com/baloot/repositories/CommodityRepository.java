@@ -1,6 +1,7 @@
 package com.baloot.repositories;
 
 import com.baloot.entities.Commodity;
+import com.baloot.entities.Provider;
 import com.baloot.entities.User;
 import com.baloot.responses.Response;
 
@@ -15,20 +16,21 @@ public class CommodityRepository {
         commodities = new ArrayList<>();
     }
 
-    public Response<String> addCommodity(Commodity commodity){
-        var existingUser = findCommodity(commodity.getId());
-        if (existingUser != null)
+    public Response<String> addCommodity(Commodity commodity, Provider provider) {
+        var existingCommodity = findCommodity(commodity.getId());
+        if (existingCommodity != null)
             return new Response<>(false, "Commodity already exists.");
         commodities.add(commodity);
-        return new Response<>(true, "User added.");
+        commodity.addProvider(provider);
+        return new Response<>(true, "Commodity added.");
     }
 
     public List<Commodity> getCommodities() {
         return commodities;
     }
 
-    public Commodity findCommodity(int commodityId){
-        for (Commodity c: commodities)
+    public Commodity findCommodity(int commodityId) {
+        for (Commodity c : commodities)
             if (c.getId() == commodityId)
                 return c;
         return null;
