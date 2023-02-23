@@ -32,13 +32,13 @@ public class CommandHandler {
         var data = commandList.length > 1 ? commandList[1] : "";
         switch (command) {
             case "addUser":
-                User user = gson.fromJson(data, User.class);
+                User user = new User(gson.fromJson(data, User.class));
                 return gson.toJson(this.userRepository.addUser(user));
             case "addProvider":
-                Provider provider = gson.fromJson(data, Provider.class);
+                Provider provider = new Provider(gson.fromJson(data, Provider.class));
                 return gson.toJson(this.providerRepository.addProvider(provider));
             case "addCommodity":
-                Commodity commodity = gson.fromJson(data, Commodity.class);
+                Commodity commodity = new Commodity(gson.fromJson(data, Commodity.class));
                 var tempProvider = providerRepository.findProvider(commodity.getProviderId());
                 if (tempProvider == null)
                     return gson.toJson(new Response<>(false, "Provider not found!"));
@@ -53,7 +53,7 @@ public class CommandHandler {
                 if(userRepository.findUser(commodityRate.getUsername()) == null)
                     return gson.toJson(new Response<>(false, "User not found!"));
                 commodityToRate.addRating(commodityRate);
-                return gson.toJson(new Response<>(false, "Rate added."));
+                return gson.toJson(new Response<>(true, "Rate added."));
             case "addToBuyList", "removeFromBuyList":
                 UserCommodityModel userCommodityModel = gson.fromJson(data, UserCommodityModel.class);
                 User userToAdd = userRepository.findUser(userCommodityModel.username);
@@ -65,13 +65,13 @@ public class CommandHandler {
                 if (command.equals("addToBuyList"))
                     return gson.toJson(userToAdd.addToBuyList(commodityToAdd));
                 else
-                    return gson.toJson(userToAdd.addToBuyList(commodityToAdd));
+                    return gson.toJson(userToAdd.removeFromBuyList(commodityToAdd));
             case "getCommodityById":
                 IdModel idModel = gson.fromJson(data, IdModel.class);
                 Commodity commodityToFind = commodityRepository.findCommodity(idModel.id);
                 if(commodityToFind == null)
                     return gson.toJson(new Response<>(false, "Commodity not found!"));
-                return gson.toJson(commodityToFind);
+                return gson.toJson(new Response<Commodity>(true, commodityToFind));
             case "getCommoditiesByCategory":
                 CategoryModel categoryModel = gson.fromJson(data, CategoryModel.class);
                 return gson.toJson(commodityRepository.getCommoditiesByCategory(categoryModel.category));
@@ -80,7 +80,7 @@ public class CommandHandler {
                 User userToGetBuyList = userRepository.findUser(usernameModel.username);
                 if(userToGetBuyList == null)
                     return gson.toJson(new Response<>(false, "User not found!"));
-                return gson.toJson(userToGetBuyList.getBuyList());
+                return gson.toJson(new Response<>(true, userToGetBuyList.getBuyList()));
             default:
                 return gson.toJson(new Response<>(false, "Not a valid command!"));
 

@@ -29,8 +29,8 @@ public class CommodityRepository {
         return new Response<>(true, "Commodity added.");
     }
 
-    public Response<String> getCommodities() {
-        return new Response<>(true, gson.toJson(commodities));
+    public Response<List<Commodity>> getCommodities() {
+        return new Response<>(true, commodities);
     }
 
     public Commodity findCommodity(int commodityId) {
@@ -40,12 +40,12 @@ public class CommodityRepository {
         return null;
     }
 
-    public Response<String> getCommoditiesByCategory(String category){
+    public Response<List<Commodity>> getCommoditiesByCategory(String category){
         var commoditiesListByCategory = new ArrayList<Commodity>();
         for (Commodity c:commodities) {
             if (c.isInList(category))
                 commoditiesListByCategory.add(c);
         }
-        return new Response<>(true, gson.toJson(commoditiesListByCategory));
+        return new Response<>(true, commoditiesListByCategory);
     }
 }

@@ -44,7 +44,7 @@ public class UserRepository {
     }
 
     private boolean isUserValid(User user){
-        Pattern userNamePattern = Pattern.compile("[a-zA-z0-9]+");
+        Pattern userNamePattern = Pattern.compile("[a-zA-Z0-9]+");
         Matcher userNameMatcher = userNamePattern.matcher(user.getUsername());
         return userNameMatcher.matches();
     }

@@ -19,13 +19,13 @@ public class User {
     @Getter
     private transient BuyList buyList;
 
-    public User(String username, String password, String birthDate, String email, String address, int credit){
-        this.password = password;
-        this.email = email;
-        this.address = address;
-        this.credit = credit;
-        this.username = username;
-        this.birthDate = birthDate;
+    public User(User user){
+        password = user.password;
+        email = user.email;
+        address = user.address;
+        credit = user.credit;
+        username = user.username;
+        birthDate = user.birthDate;
         buyList = new BuyList();
     }
 

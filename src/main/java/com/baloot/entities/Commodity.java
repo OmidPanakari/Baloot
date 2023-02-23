@@ -25,25 +25,24 @@ public class Commodity {
     @Getter
     private transient List<CommodityRate> ratings;
 
-    public Commodity(int id, String name, int price, List<String> categories, int inStock, int providerId) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.rating = 0;
-        this.inStock = inStock;
-        this.providerId = providerId;
-        this.categories = new ArrayList<>(categories);
-        this.ratings = new ArrayList<>();
+    public Commodity(Commodity commodity) {
+        id = commodity.id;
+        name = commodity.name;
+        price = commodity.price;
+        rating = 0;
+        inStock = commodity.inStock;
+        providerId = commodity.providerId;
+        categories = new ArrayList<>(commodity.categories);
+        ratings = new ArrayList<>();
     }
-
     public double getRating() {
-        if (this.ratings.size() == 0)
+        if (ratings.size() == 0)
             return 0;
         double res = 0;
-        for (var rating : this.ratings) {
+        for (var rating : ratings) {
             res += rating.getRating();
         }
-        return res / this.ratings.size();
+        return res / ratings.size();
     }
 
     public List<String> getCategoryList(String categories) {

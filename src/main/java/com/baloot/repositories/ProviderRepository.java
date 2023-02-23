@@ -17,7 +17,7 @@ public class ProviderRepository {
 
     public Response<String> addProvider(Provider provider){
         Provider existingProvider = findProvider(provider.getId());
-        if (existingProvider == null)
+        if (existingProvider != null)
             return new Response<>(false, "Provider id is taken!");
         providers.add(provider);
         return new Response<>(true, "Provider added.");

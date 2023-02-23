@@ -17,10 +17,10 @@ public class Provider {
     @Getter
     private transient List<Commodity> commodities;
 
-    public Provider(int id, String name, String registryDate) {
-        this.id = id;
-        this.name = name;
-        this.registryDate = registryDate;
+    public Provider(Provider provider) {
+        id = provider.id;
+        name = provider.name;
+        registryDate = provider.registryDate;
         rating = 0;
         commodities = new ArrayList<>();
     }
