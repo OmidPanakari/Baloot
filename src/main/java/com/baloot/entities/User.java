@@ -16,7 +16,7 @@ public class User {
     @Getter @Setter
     private String credit;
     @Getter
-    private BuyList buyList;
+    private transient BuyList buyList;
 
     public User(String username, String password, String birthDate, String email, String address, String credit){
         this.password = password;

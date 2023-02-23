@@ -1,7 +1,6 @@
 package com.baloot.entities;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,22 +13,32 @@ public class Provider {
     @Getter
     private String registryDate;
     @Getter
-    private float rating;
+    private double rating;
     @Getter
-    private List<Commodity> commodityList;
+    private transient List<Commodity> commodities;
 
     public Provider(int id, String name, String registryDate) {
         this.id = id;
         this.name = name;
         this.registryDate = registryDate;
         rating = 0;
-        commodityList = new ArrayList<>();
+        commodities = new ArrayList<>();
+    }
+
+    public double getRating() {
+        if (this.commodities.size() == 0)
+            return 0;
+        double res = 0;
+        for (var commodity: this.commodities) {
+            res += commodity.getRating();
+        }
+        return res / this.commodities.size();
     }
 
     public void addCommodity(Commodity commodity){
-        rating *= commodityList.size();
+        rating *= commodities.size();
         rating += commodity.getRating();
-        commodityList.add(commodity);
-        rating /= commodityList.size();
+        commodities.add(commodity);
+        rating /= commodities.size();
     }
 }
