@@ -3,28 +3,23 @@ package com.baloot.repositories;
 import com.baloot.entities.User;
 import com.baloot.responses.Response;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UserRepository {
-    private final List<User> users;
+    private final Database database;
 
-    public UserRepository(){
-        users = new ArrayList<>();
+    public UserRepository(Database database){
+        this.database = database;
     }
 
     public Response<String> addUser(User user){
-        if (!isUserValid(user)){
-            return new Response<>(false, "User fields are not valid!");
-        }
         var existingUser = findUser(user.getUsername());
         if (existingUser != null)
             updateUser(existingUser, user);
         else
-            users.add(user);
+            database.getUsers().add(user);
         return new Response<>(true, "User added.");
     }
 
@@ -37,7 +32,7 @@ public class UserRepository {
     }
 
     public User findUser(String username){
-        for (User u: users)
+        for (User u: database.getUsers())
             if (Objects.equals(u.getUsername(), username))
                 return u;
         return null;

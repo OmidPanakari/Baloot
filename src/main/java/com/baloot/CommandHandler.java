@@ -1,28 +1,21 @@
 package com.baloot;
 
-import com.baloot.entities.Commodity;
-import com.baloot.entities.CommodityRate;
-import com.baloot.entities.Provider;
-import com.baloot.entities.User;
-import com.baloot.models.CategoryModel;
-import com.baloot.models.IdModel;
-import com.baloot.models.UserCommodityModel;
-import com.baloot.models.UsernameModel;
-import com.baloot.repositories.CommodityRepository;
-import com.baloot.repositories.ProviderRepository;
-import com.baloot.repositories.UserRepository;
 import com.baloot.responses.Response;
+import com.baloot.services.CommodityService;
+import com.baloot.services.ProviderService;
+import com.baloot.services.UserService;
 import com.google.gson.Gson;
 
 public class CommandHandler {
-    private UserRepository userRepository;
-    private ProviderRepository providerRepository;
-    private CommodityRepository commodityRepository;
 
-    public CommandHandler() {
-        this.userRepository = new UserRepository();
-        this.providerRepository = new ProviderRepository();
-        this.commodityRepository = new CommodityRepository();
+    private final UserService userService;
+    private final ProviderService providerService;
+    private final CommodityService commodityService;
+
+    public CommandHandler(UserService userService, ProviderService providerService, CommodityService commodityService) {
+        this.userService = userService;
+        this.providerService = providerService;
+        this.commodityService = commodityService;
     }
 
     public String executeCommand(String input) {
@@ -31,59 +24,39 @@ public class CommandHandler {
         Gson gson = new Gson();
         var data = commandList.length > 1 ? commandList[1] : "";
         switch (command) {
-            case "addUser":
-                User user = new User(gson.fromJson(data, User.class));
-                return gson.toJson(this.userRepository.addUser(user));
-            case "addProvider":
-                Provider provider = new Provider(gson.fromJson(data, Provider.class));
-                return gson.toJson(this.providerRepository.addProvider(provider));
-            case "addCommodity":
-                Commodity commodity = new Commodity(gson.fromJson(data, Commodity.class));
-                var tempProvider = providerRepository.findProvider(commodity.getProviderId());
-                if (tempProvider == null)
-                    return gson.toJson(new Response<>(false, "Provider not found!"));
-                return gson.toJson(this.commodityRepository.addCommodity(commodity));
-            case "getCommoditiesList":
-                return gson.toJson(this.commodityRepository.getCommodities());
-            case "rateCommodity":
-                CommodityRate commodityRate = gson.fromJson(data, CommodityRate.class);
-                Commodity commodityToRate = commodityRepository.findCommodity(commodityRate.getCommodityId());
-                if(commodityToRate == null)
-                    return gson.toJson(new Response<>(false, "Commodity not found!"));
-                if(userRepository.findUser(commodityRate.getUsername()) == null)
-                    return gson.toJson(new Response<>(false, "User not found!"));
-                commodityToRate.addRating(commodityRate);
-                return gson.toJson(new Response<>(true, "Rate added."));
-            case "addToBuyList", "removeFromBuyList":
-                UserCommodityModel userCommodityModel = gson.fromJson(data, UserCommodityModel.class);
-                User userToAdd = userRepository.findUser(userCommodityModel.username);
-                Commodity commodityToAdd = commodityRepository.findCommodity(userCommodityModel.commodityId);
-                if(commodityToAdd == null)
-                    return gson.toJson(new Response<>(false, "Commodity not found!"));
-                if(userToAdd == null)
-                    return gson.toJson(new Response<>(false, "User not found!"));
-                if (command.equals("addToBuyList"))
-                    return gson.toJson(userToAdd.addToBuyList(commodityToAdd));
-                else
-                    return gson.toJson(userToAdd.removeFromBuyList(commodityToAdd));
-            case "getCommodityById":
-                IdModel idModel = gson.fromJson(data, IdModel.class);
-                Commodity commodityToFind = commodityRepository.findCommodity(idModel.id);
-                if(commodityToFind == null)
-                    return gson.toJson(new Response<>(false, "Commodity not found!"));
-                return gson.toJson(new Response<Commodity>(true, commodityToFind));
-            case "getCommoditiesByCategory":
-                CategoryModel categoryModel = gson.fromJson(data, CategoryModel.class);
-                return gson.toJson(commodityRepository.getCommoditiesByCategory(categoryModel.category));
-            case "getBuyList":
-                UsernameModel usernameModel = gson.fromJson(data, UsernameModel.class);
-                User userToGetBuyList = userRepository.findUser(usernameModel.username);
-                if(userToGetBuyList == null)
-                    return gson.toJson(new Response<>(false, "User not found!"));
-                return gson.toJson(new Response<>(true, userToGetBuyList.getBuyList()));
-            default:
+            case "addUser" -> {
+                return userService.addUser(data);
+            }
+            case "addProvider" -> {
+                return providerService.addProvider(data);
+            }
+            case "addCommodity" -> {
+                return commodityService.addCommodity(data);
+            }
+            case "getCommoditiesList" -> {
+                return commodityService.getCommodities();
+            }
+            case "rateCommodity" -> {
+                return commodityService.rateCommodity(data);
+            }
+            case "addToBuyList" -> {
+                return userService.addToBuyList(data);
+            }
+            case "removeFromBuyList" -> {
+                return userService.removeFromBuyList(data);
+            }
+            case "getCommodityById" -> {
+                return commodityService.getCommodityById(data);
+            }
+            case "getCommoditiesByCategory" -> {
+                return commodityService.getCommoditiesByCategory(data);
+            }
+            case "getBuyList" -> {
+                return userService.getBuyList(data);
+            }
+            default -> {
                 return gson.toJson(new Response<>(false, "Not a valid command!"));
-
+            }
         }
     }
 }

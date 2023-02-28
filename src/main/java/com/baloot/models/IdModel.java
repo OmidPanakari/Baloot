@@ -1,5 +1,8 @@
 package com.baloot.models;
 
+import lombok.Getter;
+
 public class IdModel {
-    public int id;
+    @Getter
+    private int id;
 }

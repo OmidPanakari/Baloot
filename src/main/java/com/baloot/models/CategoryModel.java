@@ -1,5 +1,8 @@
 package com.baloot.models;
 
+import lombok.Getter;
+
 public class CategoryModel {
-    public String category;
+    @Getter
+    private String category;
 }

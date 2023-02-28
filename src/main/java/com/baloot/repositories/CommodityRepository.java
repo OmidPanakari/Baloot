@@ -1,40 +1,32 @@
 package com.baloot.repositories;
 
 import com.baloot.entities.Commodity;
-import com.baloot.entities.Provider;
-import com.baloot.entities.User;
 import com.baloot.responses.Response;
-import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class CommodityRepository {
-    @SerializedName("commoditiesList")
-    private final List<Commodity> commodities;
-    private Gson gson;
+    private final Database database;
 
-    public CommodityRepository() {
-        commodities = new ArrayList<>();
-        gson = new Gson();
+    public CommodityRepository(Database database) {
+        this.database = database;
     }
 
     public Response<String> addCommodity(Commodity commodity) {
         var existingCommodity = findCommodity(commodity.getId());
         if (existingCommodity != null)
             return new Response<>(false, "Commodity already exists.");
-        commodities.add(commodity);
+        database.getCommodities().add(commodity);
         return new Response<>(true, "Commodity added.");
     }
 
     public Response<List<Commodity>> getCommodities() {
-        return new Response<>(true, commodities);
+        return new Response<>(true, database.getCommodities());
     }
 
     public Commodity findCommodity(int commodityId) {
-        for (Commodity c : commodities)
+        for (Commodity c : database.getCommodities())
             if (c.getId() == commodityId)
                 return c;
         return null;
@@ -42,7 +34,7 @@ public class CommodityRepository {
 
     public Response<List<Commodity>> getCommoditiesByCategory(String category){
         var commoditiesListByCategory = new ArrayList<Commodity>();
-        for (Commodity c:commodities) {
+        for (Commodity c : database.getCommodities()) {
             if (c.isInList(category))
                 commoditiesListByCategory.add(c);
         }

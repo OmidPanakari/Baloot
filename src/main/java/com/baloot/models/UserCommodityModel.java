@@ -1,6 +1,10 @@
 package com.baloot.models;
 
+import lombok.Getter;
+
 public class UserCommodityModel{
-    public String username;
-    public int commodityId;
+    @Getter
+    private String username;
+    @Getter
+    private int commodityId;
 }

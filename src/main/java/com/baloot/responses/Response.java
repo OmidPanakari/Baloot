@@ -1,10 +1,11 @@
 package com.baloot.responses;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class Response<T> {
+    @Getter
     private boolean success;
+    @Getter
     private T data;
 
     public Response(boolean success, T data){
