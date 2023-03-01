@@ -1,0 +1,18 @@
+[
+  {
+    "username": "username",
+    "password": "pass",
+    "email": "user@email.com",
+    "birthDate": "1977-09-17",
+    "address": "address",
+    "credit": 1500
+  },
+  {
+    "username": "___",
+    "password": "pass",
+    "email": "user@email.com",
+    "birthDate": "1977-09-17",
+    "address": "address",
+    "credit": 1500
+  }
+]

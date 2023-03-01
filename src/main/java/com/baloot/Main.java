@@ -8,13 +8,17 @@ import com.baloot.services.CommodityService;
 import com.baloot.services.ProviderService;
 import com.baloot.services.UserService;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         var commandHandler = setup();
-
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
-            var command = System.console().readLine();
+            var command = reader.readLine();
             if (command == null)
                 break;
             System.out.println(commandHandler.executeCommand(command));

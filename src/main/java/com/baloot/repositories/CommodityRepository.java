@@ -1,7 +1,6 @@
 package com.baloot.repositories;
 
 import com.baloot.entities.Commodity;
-import com.baloot.responses.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,16 +12,16 @@ public class CommodityRepository {
         this.database = database;
     }
 
-    public Response<String> addCommodity(Commodity commodity) {
+    public boolean addCommodity(Commodity commodity) {
         var existingCommodity = findCommodity(commodity.getId());
         if (existingCommodity != null)
-            return new Response<>(false, "Commodity already exists.");
+            return false;
         database.getCommodities().add(commodity);
-        return new Response<>(true, "Commodity added.");
+        return true;
     }
 
-    public Response<List<Commodity>> getCommodities() {
-        return new Response<>(true, database.getCommodities());
+    public List<Commodity> getCommodities() {
+        return database.getCommodities();
     }
 
     public Commodity findCommodity(int commodityId) {
@@ -32,12 +31,12 @@ public class CommodityRepository {
         return null;
     }
 
-    public Response<List<Commodity>> getCommoditiesByCategory(String category){
+    public List<Commodity> getCommoditiesByCategory(String category){
         var commoditiesListByCategory = new ArrayList<Commodity>();
         for (Commodity c : database.getCommodities()) {
             if (c.isInList(category))
                 commoditiesListByCategory.add(c);
         }
-        return new Response<>(true, commoditiesListByCategory);
+        return commoditiesListByCategory;
     }
 }

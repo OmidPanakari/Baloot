@@ -1,6 +1,14 @@
 package com.baloot;
 
-import com.baloot.responses.Response;
+import com.baloot.entities.Commodity;
+import com.baloot.entities.CommodityRate;
+import com.baloot.entities.Provider;
+import com.baloot.entities.User;
+import com.baloot.models.CategoryModel;
+import com.baloot.models.IdModel;
+import com.baloot.models.UserCommodityModel;
+import com.baloot.models.UsernameModel;
+import com.baloot.responses.DataResponse;
 import com.baloot.services.CommodityService;
 import com.baloot.services.ProviderService;
 import com.baloot.services.UserService;
@@ -25,37 +33,46 @@ public class CommandHandler {
         var data = commandList.length > 1 ? commandList[1] : "";
         switch (command) {
             case "addUser" -> {
-                return userService.addUser(data);
+                var user = new User(gson.fromJson(data, User.class));
+                return gson.toJson(userService.addUser(user));
             }
             case "addProvider" -> {
-                return providerService.addProvider(data);
+                var provider = new Provider(gson.fromJson(data, Provider.class));
+                return gson.toJson(providerService.addProvider(provider));
             }
             case "addCommodity" -> {
-                return commodityService.addCommodity(data);
+                var commodity = new Commodity(gson.fromJson(data, Commodity.class));
+                return gson.toJson(commodityService.addCommodity(commodity));
             }
             case "getCommoditiesList" -> {
-                return commodityService.getCommodities();
+                return gson.toJson(commodityService.getCommodities());
             }
             case "rateCommodity" -> {
-                return commodityService.rateCommodity(data);
+                var commodityRate = gson.fromJson(data, CommodityRate.class);
+                return gson.toJson(commodityService.rateCommodity(commodityRate));
             }
             case "addToBuyList" -> {
-                return userService.addToBuyList(data);
+                var userCommodityModel = gson.fromJson(data, UserCommodityModel.class);
+                return gson.toJson(userService.addToBuyList(userCommodityModel));
             }
             case "removeFromBuyList" -> {
-                return userService.removeFromBuyList(data);
+                var userCommodityModel = gson.fromJson(data, UserCommodityModel.class);
+                return gson.toJson(userService.removeFromBuyList(userCommodityModel));
             }
             case "getCommodityById" -> {
-                return commodityService.getCommodityById(data);
+                var idModel = gson.fromJson(data, IdModel.class);
+                return gson.toJson(commodityService.getCommodityById(idModel));
             }
             case "getCommoditiesByCategory" -> {
-                return commodityService.getCommoditiesByCategory(data);
+                var categoryModel = gson.fromJson(data, CategoryModel.class);
+                return gson.toJson(commodityService.getCommoditiesByCategory(categoryModel));
             }
             case "getBuyList" -> {
-                return userService.getBuyList(data);
+                var usernameModel = gson.fromJson(data, UsernameModel.class);
+                return gson.toJson(userService.getBuyList(usernameModel));
             }
             default -> {
-                return gson.toJson(new Response<>(false, "Not a valid command!"));
+                return gson.toJson(new DataResponse<>(false, "Not a valid command!"));
             }
         }
     }

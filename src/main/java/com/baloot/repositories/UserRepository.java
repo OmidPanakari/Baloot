@@ -1,11 +1,8 @@
 package com.baloot.repositories;
 
 import com.baloot.entities.User;
-import com.baloot.responses.Response;
 
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UserRepository {
     private final Database database;
@@ -14,13 +11,12 @@ public class UserRepository {
         this.database = database;
     }
 
-    public Response<String> addUser(User user){
+    public void addUser(User user){
         var existingUser = findUser(user.getUsername());
         if (existingUser != null)
             updateUser(existingUser, user);
         else
             database.getUsers().add(user);
-        return new Response<>(true, "User added.");
     }
 
     private void updateUser(User oldUser, User newUser){
@@ -36,11 +32,5 @@ public class UserRepository {
             if (Objects.equals(u.getUsername(), username))
                 return u;
         return null;
-    }
-
-    private boolean isUserValid(User user){
-        Pattern userNamePattern = Pattern.compile("[a-zA-Z0-9]+");
-        Matcher userNameMatcher = userNamePattern.matcher(user.getUsername());
-        return userNameMatcher.matches();
     }
 }

@@ -2,20 +2,20 @@ package com.baloot.services;
 
 import com.baloot.entities.Provider;
 import com.baloot.repositories.ProviderRepository;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.baloot.responses.DataResponse;
+import com.baloot.responses.Response;
 
 public class ProviderService {
     private final ProviderRepository providerRepository;
-    private final Gson gson;
 
     public ProviderService(ProviderRepository providerRepository) {
         this.providerRepository = providerRepository;
-        gson = new GsonBuilder().create();
     }
 
-    public String addProvider(String data) {
-        Provider provider = new Provider(gson.fromJson(data, Provider.class));
-        return gson.toJson(this.providerRepository.addProvider(provider));
+    public Response addProvider(Provider provider) {
+        if (providerRepository.findProvider(provider.getId()) != null)
+            return new DataResponse<>(false, "Provider id is taken!");
+        providerRepository.addProvider(provider);
+        return new DataResponse<>(true, "Provider added.");
     }
 }

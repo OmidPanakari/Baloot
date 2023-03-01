@@ -7,56 +7,53 @@ import com.baloot.models.IdModel;
 import com.baloot.repositories.CommodityRepository;
 import com.baloot.repositories.ProviderRepository;
 import com.baloot.repositories.UserRepository;
+import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public class CommodityService {
     private final ProviderRepository providerRepository;
     private final CommodityRepository commodityRepository;
     private final UserRepository userRepository;
-    private final Gson gson;
 
-    public CommodityService(ProviderRepository providerRepository, CommodityRepository commodityRepository, UserRepository userRepository) {
+    public CommodityService(ProviderRepository providerRepository, CommodityRepository commodityRepository,
+                            UserRepository userRepository) {
         this.providerRepository = providerRepository;
         this.commodityRepository = commodityRepository;
         this.userRepository = userRepository;
-        gson = new GsonBuilder().create();
     }
 
-    public String addCommodity(String data) {
-        Commodity commodity = new Commodity(gson.fromJson(data, Commodity.class));
+    public Response addCommodity(Commodity commodity) {
         var tempProvider = providerRepository.findProvider(commodity.getProviderId());
         if (tempProvider == null)
-            return gson.toJson(new Response<>(false, "Provider not found!"));
-        return gson.toJson(this.commodityRepository.addCommodity(commodity));
+            return new DataResponse<>(false, "Provider not found!");
+        if (commodityRepository.addCommodity(commodity))
+            return new DataResponse<>(true, "Commodity added.");
+        return new DataResponse<>(false, "Commodity already exists.");
     }
 
-    public String getCommodityById(String data) {
-        IdModel idModel = gson.fromJson(data, IdModel.class);
+    public Response getCommodityById(IdModel idModel) {
         Commodity commodityToFind = commodityRepository.findCommodity(idModel.getId());
         if (commodityToFind == null)
-            return gson.toJson(new Response<>(false, "Commodity not found!"));
-        return gson.toJson(new Response<>(true, commodityToFind));
+            return new DataResponse<>(false, "Commodity not found!");
+        return new DataResponse<>(true, commodityToFind);
     }
 
-    public String getCommodities() {
-        return gson.toJson(this.commodityRepository.getCommodities());
+    public Response getCommodities() {
+        return new DataResponse<>(true, this.commodityRepository.getCommodities());
     }
 
-    public String getCommoditiesByCategory(String data) {
-        CategoryModel categoryModel = gson.fromJson(data, CategoryModel.class);
-        return gson.toJson(commodityRepository.getCommoditiesByCategory(categoryModel.getCategory()));
+    public Response getCommoditiesByCategory(CategoryModel categoryModel) {
+        var response = commodityRepository.getCommoditiesByCategory(categoryModel.getCategory());
+        return new DataResponse<>(true, response);
     }
 
-    public String rateCommodity(String data) {
-        CommodityRate commodityRate = gson.fromJson(data, CommodityRate.class);
+    public Response rateCommodity(CommodityRate commodityRate) {
         Commodity commodityToRate = commodityRepository.findCommodity(commodityRate.getCommodityId());
         if (commodityToRate == null)
-            return gson.toJson(new Response<>(false, "Commodity not found!"));
+            return new DataResponse<>(false, "Commodity not found!");
         if (userRepository.findUser(commodityRate.getUsername()) == null)
-            return gson.toJson(new Response<>(false, "User not found!"));
+            return new DataResponse<>(false, "User not found!");
         commodityToRate.addRating(commodityRate);
-        return gson.toJson(new Response<>(true, "Rate added."));
+        return new DataResponse<>(true, "Rate added.");
     }
 }

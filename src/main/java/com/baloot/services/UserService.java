@@ -5,9 +5,8 @@ import com.baloot.models.UserCommodityModel;
 import com.baloot.models.UsernameModel;
 import com.baloot.repositories.CommodityRepository;
 import com.baloot.repositories.UserRepository;
+import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,50 +14,55 @@ import java.util.regex.Pattern;
 public class UserService {
     private final UserRepository userRepository;
     private final CommodityRepository commodityRepository;
-    private final Gson gson;
 
     public UserService(UserRepository userRepository, CommodityRepository commodityRepository) {
         this.userRepository = userRepository;
         this.commodityRepository = commodityRepository;
-        gson = new GsonBuilder().create();
     }
 
-    public String addUser(String data) {
-        User user = new User(gson.fromJson(data, User.class));
+    public Response addUser(User user) {
         if (!isUserValid(user)){
-            return gson.toJson(new Response<>(false, "User fields are not valid!"));
+            return new DataResponse<>(false, "User fields are not valid!");
         }
-        return gson.toJson(userRepository.addUser(user));
+        userRepository.addUser(user);
+        return new DataResponse<>(true, "User added.");
     }
 
-    public String addToBuyList(String data) {
-        var userCommodityModel = gson.fromJson(data, UserCommodityModel.class);
+    public Response addToBuyList(UserCommodityModel userCommodityModel) {
         var userToAdd = userRepository.findUser(userCommodityModel.getUsername());
-        var commodityToAdd = commodityRepository.findCommodity(userCommodityModel.getCommodityId());
-        if (commodityToAdd == null)
-            return gson.toJson(new Response<>(false, "Commodity not found!"));
+        var commodity = commodityRepository.findCommodity(userCommodityModel.getCommodityId());
+        if (commodity == null)
+            return new DataResponse<>(false, "Commodity not found!");
         if (userToAdd == null)
-            return gson.toJson(new Response<>(false, "User not found!"));
-        return gson.toJson(userToAdd.addToBuyList(commodityToAdd));
+            return new DataResponse<>(false, "User not found!");
+        if (commodity.getInStock() == 0)
+            return new DataResponse<>(false, "Not enough stock!");
+        if (userToAdd.addToBuyList(commodity)) {
+            commodity.setInStock(commodity.getInStock() - 1);
+            return new DataResponse<>(true, "Commodity added to the buy list.");
+        }
+        return new DataResponse<>(false, "Commodity already exists in the buy list!");
     }
 
-    public String removeFromBuyList(String data) {
-        var userCommodityModel = gson.fromJson(data, UserCommodityModel.class);
+    public Response removeFromBuyList(UserCommodityModel userCommodityModel) {
         var userToAdd = userRepository.findUser(userCommodityModel.getUsername());
-        var commodityToAdd = commodityRepository.findCommodity(userCommodityModel.getCommodityId());
-        if (commodityToAdd == null)
-            return gson.toJson(new Response<>(false, "Commodity not found!"));
+        var commodity = commodityRepository.findCommodity(userCommodityModel.getCommodityId());
+        if (commodity == null)
+            return new DataResponse<>(false, "Commodity not found!");
         if (userToAdd == null)
-            return gson.toJson(new Response<>(false, "User not found!"));
-        return gson.toJson(userToAdd.removeFromBuyList(commodityToAdd));
+            return new DataResponse<>(false, "User not found!");
+        if (userToAdd.removeFromBuyList(commodity)) {
+            commodity.setInStock(commodity.getInStock() + 1);
+            return new DataResponse<>(true, "Commodity removed from the buy list!");
+        }
+        return new DataResponse<>(false, "Commodity does not exist in the buy list.");
     }
 
-    public String getBuyList(String data) {
-        UsernameModel usernameModel = gson.fromJson(data, UsernameModel.class);
+    public Response getBuyList(UsernameModel usernameModel) {
         User userToGetBuyList = userRepository.findUser(usernameModel.getUsername());
         if (userToGetBuyList == null)
-            return gson.toJson(new Response<>(false, "User not found!"));
-        return gson.toJson(new Response<>(true, userToGetBuyList.getBuyList()));
+            return new DataResponse<>(false, "User not found!");
+        return new DataResponse<>(true, userToGetBuyList.getBuyList());
     }
 
     private boolean isUserValid(User user) {

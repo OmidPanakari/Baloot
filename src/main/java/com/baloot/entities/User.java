@@ -1,7 +1,9 @@
 package com.baloot.entities;
-import com.baloot.responses.Response;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class User {
     @Getter
@@ -17,7 +19,7 @@ public class User {
     @Getter @Setter
     private int credit;
     @Getter
-    private transient BuyList buyList;
+    private transient List<Commodity> buyList;
 
     public User(User user){
         password = user.password;
@@ -26,15 +28,23 @@ public class User {
         credit = user.credit;
         username = user.username;
         birthDate = user.birthDate;
-        buyList = new BuyList();
+        buyList = new ArrayList<>();
     }
 
-    public Response<String> addToBuyList(Commodity commodity){
-        return buyList.addToBuyList(commodity);
+    public boolean addToBuyList(Commodity commodity){
+        var ind = buyList.indexOf(commodity);
+        if (ind != -1)
+            return false;
+        buyList.add(commodity);
+        return true;
     }
 
-    public Response<String> removeFromBuyList(Commodity commodity){
-        return buyList.removeFromBuyList(commodity);
+    public boolean removeFromBuyList(Commodity commodity){
+        var ind = buyList.indexOf(commodity);
+        if (ind == -1)
+            return false;
+        buyList.remove(ind);
+        return true;
     }
 
 }

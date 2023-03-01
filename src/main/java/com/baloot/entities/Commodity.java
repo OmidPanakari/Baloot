@@ -17,8 +17,9 @@ public class Commodity {
     private int price;
     @Getter
     private List<String> categories;
-    private double rating;
     @Getter
+    private double rating;
+    @Getter @Setter
     private int inStock;
     @Getter
     private int providerId;

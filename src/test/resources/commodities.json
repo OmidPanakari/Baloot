@@ -1,0 +1,25 @@
+[
+  {
+    "id": 1,
+    "name": "name",
+    "providerId": 1,
+    "price": 1000,
+    "categories": [
+      "cat1",
+      "cat2"
+    ],
+    "rating": 1,
+    "inStock": 50
+  },
+  {
+    "id": 2,
+    "name": "name",
+    "providerId": 1,
+    "price": 1000,
+    "categories": [
+      "cat2"
+    ],
+    "rating": 1,
+    "inStock": 50
+  }
+]
