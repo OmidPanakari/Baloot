@@ -15,14 +15,8 @@ import java.io.InputStreamReader;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        var commandHandler = setup();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        while (true) {
-            var command = reader.readLine();
-            if (command == null)
-                break;
-            System.out.println(commandHandler.executeCommand(command));
-        }
+        var server = new Server();
+        server.startServer();
     }
 
     public static CommandHandler setup() {
