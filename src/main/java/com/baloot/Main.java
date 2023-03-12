@@ -15,11 +15,11 @@ import java.io.InputStreamReader;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        var server = new Server();
+        var server = setup();
         server.startServer();
     }
 
-    public static CommandHandler setup() {
+    public static Server setup() {
         var database = new Database();
 
         var userRepository = new UserRepository(database);
@@ -30,6 +30,6 @@ public class Main {
         var providerService = new ProviderService(providerRepository);
         var commodityService = new CommodityService(providerRepository, commodityRepository, userRepository);
 
-        return new CommandHandler(userService, providerService, commodityService);
+        return new Server(userService, providerService, commodityService);
     }
 }
