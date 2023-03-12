@@ -31,8 +31,8 @@ public class CommodityService {
         return new DataResponse<>(false, "Commodity already exists.");
     }
 
-    public Response getCommodityById(IdModel idModel) {
-        Commodity commodityToFind = commodityRepository.findCommodity(idModel.getId());
+    public Response getCommodityById(int commodityId) {
+        Commodity commodityToFind = commodityRepository.findCommodity(commodityId);
         if (commodityToFind == null)
             return new DataResponse<>(false, "Commodity not found!");
         return new DataResponse<>(true, commodityToFind);

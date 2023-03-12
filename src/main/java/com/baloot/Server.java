@@ -22,7 +22,7 @@ public class Server{
                 .get("/", ctx -> ctx.result("Hello World"))
                 .start(7070);
         app.get("/commodities", new GetCommodities(commodityService));
-        app.get("/commodities/{commodityId}", new GetCommodities(commodityService));
+        app.get("/commodities/{commodityId}", new GetCommodityById(commodityService));
         app.get("/providers/{providerId}", new GetProviderById());
         app.get("/users/{userId}", new GetUserById());
         app.get("/addCredit/{userId}/{credit}", new AddCredit());
