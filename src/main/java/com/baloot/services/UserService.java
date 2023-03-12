@@ -72,6 +72,14 @@ public class UserService {
         return new DataResponse<>(true, user);
     }
 
+    public Response addCredit(String username, int credit) {
+        User user = userRepository.findUser(username);
+        if (user == null)
+            return new DataResponse<>(false, "User not found!");
+        user.setCredit(user.getCredit() + credit);
+        return new DataResponse<>(true, "User credit updated.");
+    }
+
     private boolean isUserValid(User user) {
         Pattern userNamePattern = Pattern.compile("[a-zA-Z0-9]+");
         Matcher userNameMatcher = userNamePattern.matcher(user.getUsername());

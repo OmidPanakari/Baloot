@@ -25,9 +25,9 @@ public class Server{
         app.get("/commodities/{commodityId}", new GetCommodityById(commodityService));
         app.get("/providers/{providerId}", new GetProviderById(providerService));
         app.get("/users/{username}", new GetUserById(userService));
-        app.get("/addCredit/{userId}/{credit}", new AddCredit());
-        app.get("/addToBuyList/{username}/{commodityId}", new AddToBuyList());
-        app.get("/removeFromBuyList/{username}/{commodityId}", new RemoveFromBuyList());
+        app.get("/addCredit/{username}/{credit}", new AddCredit(userService));
+        app.get("/addToBuyList/{username}/{commodityId}", new AddToBuyList(userService));
+        app.get("/removeFromBuyList/{username}/{commodityId}", new RemoveFromBuyList(userService));
         app.get("/rateCommodity/{username}/{commodityId}/{rate}", new RateCommodity());
         app.get("/voteComment/{username}/{commentId}/{vote}", new VoteComment());
         app.get("commodities/search/{startPrice}/{endPrice}", new SearchCommoditiesByPrice());
