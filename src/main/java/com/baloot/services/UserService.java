@@ -1,9 +1,12 @@
 package com.baloot.services;
 
+import com.baloot.entities.Comment;
 import com.baloot.entities.User;
 import com.baloot.models.UserCommodityModel;
 import com.baloot.models.UsernameModel;
+import com.baloot.repositories.CommentRepository;
 import com.baloot.repositories.CommodityRepository;
+import com.baloot.repositories.Database;
 import com.baloot.repositories.UserRepository;
 import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
@@ -14,10 +17,12 @@ import java.util.regex.Pattern;
 public class UserService {
     private final UserRepository userRepository;
     private final CommodityRepository commodityRepository;
+    private final CommentRepository commentRepository;
 
-    public UserService(UserRepository userRepository, CommodityRepository commodityRepository) {
+    public UserService(UserRepository userRepository, CommodityRepository commodityRepository, CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.commodityRepository = commodityRepository;
+        this.commentRepository = commentRepository;
     }
 
     public Response addUser(User user) {
@@ -78,6 +83,17 @@ public class UserService {
             return new DataResponse<>(false, "User not found!");
         user.setCredit(user.getCredit() + credit);
         return new DataResponse<>(true, "User credit updated.");
+    }
+
+    public Response addVote(String username, int commentId, int vote){
+        User user = userRepository.findUser(username);
+        if (user == null)
+            return new DataResponse<>(false, "User not found!");
+        Comment comment = commentRepository.getComment(commentId);
+        if (comment == null)
+            return new DataResponse<>(false, "Comment not found!");
+        comment.addRating(vote);
+        return new DataResponse<>(true, "Vote added.");
     }
 
     private boolean isUserValid(User user) {

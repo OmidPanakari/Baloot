@@ -25,6 +25,8 @@ public class Commodity {
     private int providerId;
     @Getter
     private transient List<CommodityRate> ratings;
+    @Getter
+    private transient List<Comment> comments;
 
     public Commodity(Commodity commodity) {
         id = commodity.id;
@@ -35,6 +37,7 @@ public class Commodity {
         providerId = commodity.providerId;
         categories = new ArrayList<>(commodity.categories);
         ratings = new ArrayList<>();
+        comments = new ArrayList<>();
     }
     public double getRating() {
         if (ratings.size() == 0)
@@ -60,7 +63,9 @@ public class Commodity {
         }
         ratings.add(commodityRate);
     }
-
+    public void addComment(Comment comment){
+        comments.add(comment);
+    }
     public boolean isInList(String category){
         return categories.contains(category);
     }

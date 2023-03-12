@@ -1,11 +1,9 @@
 import com.baloot.CommandHandler;
+import com.baloot.entities.Comment;
 import com.baloot.entities.Commodity;
 import com.baloot.entities.Provider;
 import com.baloot.entities.User;
-import com.baloot.repositories.CommodityRepository;
-import com.baloot.repositories.Database;
-import com.baloot.repositories.ProviderRepository;
-import com.baloot.repositories.UserRepository;
+import com.baloot.repositories.*;
 import com.baloot.services.CommodityService;
 import com.baloot.services.ProviderService;
 import com.baloot.services.UserService;
@@ -38,8 +36,9 @@ public class CommandHandlerTest {
         var userRepository = new UserRepository(database);
         var providerRepository = new ProviderRepository(database);
         var commodityRepository = new CommodityRepository(database);
+        var commentRepository = new CommentRepository(database);
 
-        var userService = new UserService(userRepository, commodityRepository);
+        var userService = new UserService(userRepository, commodityRepository, commentRepository);
         var providerService = new ProviderService(providerRepository);
         var commodityService = new CommodityService(providerRepository, commodityRepository, userRepository);
 
