@@ -65,7 +65,7 @@ public class CommandHandler {
             }
             case "getCommoditiesByCategory" -> {
                 var categoryModel = gson.fromJson(data, CategoryModel.class);
-                return gson.toJson(commodityService.getCommoditiesByCategory(categoryModel));
+                return gson.toJson(commodityService.getCommoditiesByCategory(categoryModel.getCategory()));
             }
             case "getBuyList" -> {
                 var usernameModel = gson.fromJson(data, UsernameModel.class);

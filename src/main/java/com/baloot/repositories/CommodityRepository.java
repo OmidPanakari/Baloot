@@ -39,4 +39,13 @@ public class CommodityRepository {
         }
         return commoditiesListByCategory;
     }
+
+    public List<Commodity> getCommoditiesByPrice(int startPrice, int endPrice){
+        var commoditiesListByCategory = new ArrayList<Commodity>();
+        for (Commodity c : database.getCommodities()) {
+            if (c.getPrice() >= startPrice && c.getPrice() <= endPrice)
+                commoditiesListByCategory.add(c);
+        }
+        return commoditiesListByCategory;
+    }
 }
