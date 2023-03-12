@@ -23,8 +23,8 @@ public class Server{
                 .start(7070);
         app.get("/commodities", new GetCommodities(commodityService));
         app.get("/commodities/{commodityId}", new GetCommodityById(commodityService));
-        app.get("/providers/{providerId}", new GetProviderById());
-        app.get("/users/{userId}", new GetUserById());
+        app.get("/providers/{providerId}", new GetProviderById(providerService));
+        app.get("/users/{username}", new GetUserById(userService));
         app.get("/addCredit/{userId}/{credit}", new AddCredit());
         app.get("/addToBuyList/{username}/{commodityId}", new AddToBuyList());
         app.get("/removeFromBuyList/{username}/{commodityId}", new RemoveFromBuyList());

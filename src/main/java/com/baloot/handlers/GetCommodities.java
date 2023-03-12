@@ -1,5 +1,6 @@
 package com.baloot.handlers;
 
+import com.baloot.HtmlHelper;
 import com.baloot.entities.Commodity;
 import com.baloot.responses.DataResponse;
 import com.baloot.services.CommodityService;
@@ -29,30 +30,9 @@ public class GetCommodities implements Handler {
         var html = new File("src/main/static/Commodities.html");
         var document = Jsoup.parse(html, "UTF-8");
         var table = document.getElementsByTag("table");
-        var data = GetCommoditiesTable(commodities);
+        var data = HtmlHelper.GetCommoditiesTable(commodities);
         table.get(0).append(data);
         context.contentType("text/html");
         context.result(document.toString());
-    }
-
-    private String GetCommoditiesTable(List<Commodity> commodities) {
-        String result = "";
-        for (var commodity : commodities) {
-            result += GetCommodityRow(commodity);
-        }
-        return result;
-    }
-
-    private String GetCommodityRow(Commodity commodity) {
-        return  "<tr>" +
-                "<td>" + commodity.getId() + "</td>" +
-                "<td>" + commodity.getName() + "</td>" +
-                "<td>" + commodity.getProviderId() + "</td>" +
-                "<td>" + commodity.getPrice() + "</td>" +
-                "<td>" + String.join(",", commodity.getCategories()) + "</td>" +
-                "<td>" + commodity.getRating() + "</td>" +
-                "<td>" + commodity.getInStock() + "</td>" +
-                "<td>" + "<a href=\"/commodities/" + commodity.getId() + "\">Info</a>" + "</td>" +
-                "</tr>";
     }
 }

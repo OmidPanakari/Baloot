@@ -18,4 +18,12 @@ public class ProviderService {
         providerRepository.addProvider(provider);
         return new DataResponse<>(true, "Provider added.");
     }
+
+    public Response getProviderById(int providerId) {
+        Provider provider = providerRepository.findProvider(providerId);
+        if (provider == null) {
+            return new DataResponse<>(false, "Provider not found!");
+        }
+        return new DataResponse<>(true, provider);
+    }
 }

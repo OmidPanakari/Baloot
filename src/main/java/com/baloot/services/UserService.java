@@ -65,6 +65,13 @@ public class UserService {
         return new DataResponse<>(true, userToGetBuyList.getBuyList());
     }
 
+    public Response getUser(String username) {
+        User user = userRepository.findUser(username);
+        if (user == null)
+            return new DataResponse<>(false, "User not found!");
+        return new DataResponse<>(true, user);
+    }
+
     private boolean isUserValid(User user) {
         Pattern userNamePattern = Pattern.compile("[a-zA-Z0-9]+");
         Matcher userNameMatcher = userNamePattern.matcher(user.getUsername());
