@@ -23,6 +23,7 @@ public class GetCommodityById implements Handler {
     @Override
     public void handle(@NotNull Context context) throws Exception {
         int commodityId = Integer.parseInt(context.pathParam("commodityId"));
+        var username = context.queryParam("username");
         var response = commodityService.getCommodityById(commodityId);
         if (!response.isSuccess())
             context.redirect("/forbidden");
@@ -30,6 +31,8 @@ public class GetCommodityById implements Handler {
         var html = new File("src/main/static/Commodity.html");
         var document = Jsoup.parse(html, "UTF-8");
         HtmlHelper.MakeCommodityElement(document, commodity);
+        var commentsTable = HtmlHelper.GetCommentsTable(commodity.getComments(), username);
+        document.getElementsByTag("table").get(0).append(commentsTable);
         context.contentType("text/html");
         context.result(document.toString());
     }

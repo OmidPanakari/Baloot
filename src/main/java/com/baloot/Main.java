@@ -11,12 +11,12 @@ import java.io.InputStreamReader;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         var server = setup();
         server.startServer();
     }
 
-    public static Server setup() {
+    public static Server setup() throws Exception {
         var database = new Database();
 
         var userRepository = new UserRepository(database);

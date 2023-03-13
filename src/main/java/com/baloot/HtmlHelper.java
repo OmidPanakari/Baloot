@@ -1,5 +1,6 @@
 package com.baloot;
 
+import com.baloot.entities.Comment;
 import com.baloot.entities.Commodity;
 import com.baloot.entities.Provider;
 import com.baloot.entities.User;
@@ -8,6 +9,52 @@ import org.jsoup.nodes.Document;
 import java.util.List;
 
 public class HtmlHelper {
+    public static String GetCommentsTable(List<Comment> comments, String username) {
+        StringBuilder result = new StringBuilder();
+        for (var comment : comments) {
+            result.append(GetCommentRow(comment, username));
+        }
+        return result.toString();
+    }
+    public static String GetCommentRow(Comment comment, String username) {
+        var res =
+                "<tr>" +
+                "<td>" + comment.getUsername() + "</td>" +
+                "<td>" + comment.getText() + "</td>" +
+                "<td>" + comment.getDate() + "</td>";
+        if (username != null) {
+            res +=
+                "<td>" +
+                "<form action=\"/voteComment/" + comment.getId() + "\" method=\"POST\">" +
+                "<label for=\"\">" + comment.getLikes() + "</label>" +
+                "<input id=\"like_vote\" type=\"hidden\" name=\"vote\" value=\"1\"/>" +
+                "<input id=\"like_username\" type=\"hidden\" name=\"username\" value=\"" + username + "\"/>" +
+                "<button type=\"submit\">like</button>" +
+                "</form>" +
+                "</td>";
+            res +=
+                "<td>" +
+                "<form action=\"/voteComment/" + comment.getId() + "\" method=\"POST\">" +
+                "<label for=\"\">" + comment.getDislikes() + "</label>" +
+                "<input id=\"dislike_vote\" type=\"hidden\" name=\"vote\" value=\"-1\"/>" +
+                "<input id=\"dislike_username\" type=\"hidden\" name=\"username\" value=\"" + username + "\"/>" +
+                "<button type=\"submit\">dislike</button>" +
+                "</form>" +
+                "</td>";
+        }
+        else {
+            res +=
+                "<td>" +
+                "<button disabled>like</button>" +
+                "</td>";
+            res +=
+                "<td>" +
+                "<button disabled>dislike</button>" +
+                "</td>";
+        }
+        res += "</tr>";
+        return res;
+    }
     public static String GetCommoditiesTable(List<Commodity> commodities) {
         String result = "";
         for (var commodity : commodities) {

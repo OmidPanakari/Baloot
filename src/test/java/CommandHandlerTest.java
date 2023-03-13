@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class CommandHandlerTest {
     public static List<Commodity> commodities;
     public static Gson gson;
     @Before
-    public void setupApplication() {
+    public void setupApplication() throws Exception {
         var database = new Database();
 
         var userRepository = new UserRepository(database);

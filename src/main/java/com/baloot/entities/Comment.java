@@ -1,11 +1,11 @@
 package com.baloot.entities;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Comment {
-
-    @Getter
     private static int NextID = 0;
+
     @Getter
     private String userEmail;
     @Getter
@@ -17,7 +17,11 @@ public class Comment {
     @Getter
     private transient int id;
     @Getter
-    private int rating;
+    private int likes;
+    @Getter
+    private int dislikes;
+    @Getter @Setter
+    private transient String username;
 
     public Comment(Comment comment) {
         this.userEmail = comment.userEmail;
@@ -25,11 +29,15 @@ public class Comment {
         this.text = comment.text;
         this.date = comment.date;
         this.id = NextID++;
-        rating = 0;
+        likes = 0;
+        dislikes = 0;
     }
 
-    public void addRating(int score){
-        rating += score;
+    public void voteComment(int vote){
+        if (vote == 1)
+            likes += 1;
+        else if (vote == -1)
+            dislikes += 1;
     }
 
 

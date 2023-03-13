@@ -25,8 +25,11 @@
       <li id="inStock"></li>
     </ul>
 
-    <label>Your ID:</label>
-    <input type="text" name="user_id" value="" />
+    <form action="" method="GET">
+      <label>Your ID:</label>
+      <input type="text" name="username" value="" />
+      <button type="submit">Set User</button>
+    </form>
     <br><br>
     <form action="" method="POST">
       <label>Rate(between 1 and 10):</label>
@@ -46,35 +49,6 @@
         <th>date</th>
         <th></th>
         <th></th>
-      </tr>
-      <tr>
-        <td>user1</td>
-        <td>Good</td>
-        <td>2022-07-25</td>
-        <td>
-          <form action="" method="POST">
-            <label for="">2</label>
-            <input
-              id="form_comment_id"
-              type="hidden"
-              name="comment_id"
-              value="01"
-            />
-            <button type="submit">like</button>
-          </form>
-        </td>
-        <td>
-          <form action="" method="POST">
-            <label for="">1</label>
-            <input
-              id="form_comment_id"
-              type="hidden"
-              name="comment_id"
-              value="01"
-            />
-            <button type="submit">dislike</button>
-          </form>
-        </td>
       </tr>
     </table>
    

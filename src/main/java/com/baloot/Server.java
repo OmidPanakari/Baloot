@@ -29,7 +29,7 @@ public class Server{
         app.get("/addToBuyList/{username}/{commodityId}", new AddToBuyList(userService));
         app.get("/removeFromBuyList/{username}/{commodityId}", new RemoveFromBuyList(userService));
         app.get("/rateCommodity/{username}/{commodityId}/{rate}", new RateCommodity(commodityService));
-        app.get("/voteComment/{username}/{commentId}/{vote}", new VoteComment());
+        app.post("/voteComment/{commentId}", new VoteComment(userService));
         app.get("commodities/search/{startPrice}/{endPrice}", new SearchCommoditiesByPrice(commodityService));
         app.get("commodities/search/{category}", new SearchCommoditiesByCategory(commodityService));
     }

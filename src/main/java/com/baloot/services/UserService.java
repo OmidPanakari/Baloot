@@ -6,7 +6,6 @@ import com.baloot.models.UserCommodityModel;
 import com.baloot.models.UsernameModel;
 import com.baloot.repositories.CommentRepository;
 import com.baloot.repositories.CommodityRepository;
-import com.baloot.repositories.Database;
 import com.baloot.repositories.UserRepository;
 import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
@@ -85,14 +84,14 @@ public class UserService {
         return new DataResponse<>(true, "User credit updated.");
     }
 
-    public Response addVote(String username, int commentId, int vote){
+    public Response voteComment(String username, int commentId, int vote){
         User user = userRepository.findUser(username);
         if (user == null)
             return new DataResponse<>(false, "User not found!");
         Comment comment = commentRepository.getComment(commentId);
         if (comment == null)
             return new DataResponse<>(false, "Comment not found!");
-        comment.addRating(vote);
+        comment.voteComment(vote);
         return new DataResponse<>(true, "Vote added.");
     }
 

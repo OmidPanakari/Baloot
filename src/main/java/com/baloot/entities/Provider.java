@@ -14,8 +14,13 @@ public class Provider {
     private String registryDate;
     @Getter
     private double rating;
-    @Getter
     private transient List<Commodity> commodities;
+
+    public List<Commodity> getCommodities() {
+        if (commodities == null)
+            commodities = new ArrayList<>();
+        return commodities;
+    }
 
     public Provider(Provider provider) {
         id = provider.id;
@@ -36,6 +41,8 @@ public class Provider {
     }
 
     public void addCommodity(Commodity commodity){
+        if (commodities == null)
+            commodities = new ArrayList<>();
         rating *= commodities.size();
         rating += commodity.getRating();
         commodities.add(commodity);

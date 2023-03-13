@@ -28,6 +28,9 @@ public class GetProviderById implements Handler {
         var html = new File("src/main/static/Provider.html");
         var document = Jsoup.parse(html, "UTF-8");
         HtmlHelper.MakeProviderElement(document, provider);
+        var row = HtmlHelper.GetCommoditiesTable(provider.getCommodities());
+        var table = document.getElementsByTag("table");
+        table.get(0).append(row);
         context.contentType("text/html");
         context.result(document.toString());
     }

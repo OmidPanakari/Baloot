@@ -23,10 +23,20 @@ public class Commodity {
     private int inStock;
     @Getter
     private int providerId;
-    @Getter
     private transient List<CommodityRate> ratings;
-    @Getter
     private transient List<Comment> comments;
+
+    public List<CommodityRate> getRatings() {
+        if (ratings == null)
+            ratings = new ArrayList<>();
+        return ratings;
+    }
+
+    public List<Comment> getComments() {
+        if (comments == null)
+            comments = new ArrayList<>();
+        return comments;
+    }
 
     public Commodity(Commodity commodity) {
         id = commodity.id;
@@ -40,6 +50,8 @@ public class Commodity {
         comments = new ArrayList<>();
     }
     public double getRating() {
+        if (ratings == null)
+            ratings = new ArrayList<>();
         if (ratings.size() == 0)
             return 0;
         double res = 0;
@@ -64,6 +76,8 @@ public class Commodity {
         ratings.add(commodityRate);
     }
     public void addComment(Comment comment){
+        if (comments == null)
+            comments = new ArrayList<>();
         comments.add(comment);
     }
     public boolean isInList(String category){
