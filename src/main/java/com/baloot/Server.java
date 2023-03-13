@@ -5,6 +5,7 @@ import com.baloot.services.CommodityService;
 import com.baloot.services.ProviderService;
 import com.baloot.services.UserService;
 import io.javalin.Javalin;
+import org.jsoup.Jsoup;
 
 import java.io.File;
 
@@ -23,7 +24,8 @@ public class Server{
         var app = Javalin.create()
                 .get("/", ctx -> ctx.result("Hello World"))
                 .start(7070);
-        app.error(404, ctx -> {ctx.result(HtmlHelper.Get404Page()); ctx.contentType("text/html");});
+        app.error(404, ctx -> {ctx.result(Jsoup.parse(new File("src/main/static/404.html")).html()); ctx.contentType("text/html");});
+        app.error(403, ctx -> {ctx.result(Jsoup.parse(new File("src/main/static/403.html")).html()); ctx.contentType("text/html");});
         app.get("/commodities", new GetCommodities(commodityService));
         app.get("/commodities/{commodityId}", new GetCommodityById(commodityService));
         app.get("/providers/{providerId}", new GetProviderById(providerService));

@@ -128,8 +128,4 @@ public class HtmlHelper {
         document.getElementById("credit").text("Credit: " + user.getCredit());
         document.getElementsByTag("table").append(GetBuyList(user));
     }
-
-    public static String Get404Page() throws IOException {
-        return Jsoup.parse(new File("src/main/static/404.html")).html();
-    }
 }
