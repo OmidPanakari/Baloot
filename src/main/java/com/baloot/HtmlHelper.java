@@ -4,8 +4,11 @@ import com.baloot.entities.Comment;
 import com.baloot.entities.Commodity;
 import com.baloot.entities.Provider;
 import com.baloot.entities.User;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class HtmlHelper {
@@ -55,6 +58,30 @@ public class HtmlHelper {
         res += "</tr>";
         return res;
     }
+
+    public static String GetBuyList(User user){
+        StringBuilder result = new StringBuilder();
+        for (var commodity : user.getBuyList()){
+            result.append(GetBuyListRow(commodity, user.getUsername()));
+        }
+        return result.toString();
+    }
+
+    private static String GetBuyListRow(Commodity commodity, String username){
+        return "<tr>"+"<th>"+commodity.getId()+"</th>"+
+            "<th>"+commodity.getName()+"</th>"+
+            "<th>"+ commodity.getProviderId()+"</th>"+
+            "<th>"+commodity.getPrice()+"</th>"+
+            "<th>"+commodity.getCategoryString()+"</th>"+
+            "<th>"+commodity.getRating()+"</th>"+
+            "<th>"+commodity.getInStock()+"</th>"+
+                "<td><a href=\"/commodities/" + commodity.getId() + "\">Link</a></td>" +
+            "<td>" +
+                "<form action=\"/removeFromBuyList/"+username+"/"+commodity.getId()+"\" method=\"GET\" >"+
+                    "<button type=\"submit\">Remove</button>"+
+                "</form>"+
+            "</td>"+"</tr>";
+    }
     public static String GetCommoditiesTable(List<Commodity> commodities) {
         String result = "";
         for (var commodity : commodities) {
@@ -62,7 +89,6 @@ public class HtmlHelper {
         }
         return result;
     }
-
     private static String GetCommodityRow(Commodity commodity) {
         return  "<tr>" +
                 "<td>" + commodity.getId() + "</td>" +
@@ -75,6 +101,8 @@ public class HtmlHelper {
                 "<td>" + "<a href=\"/commodities/" + commodity.getId() + "\">Info</a>" + "</td>" +
                 "</tr>";
     }
+
+
 
     public static void MakeCommodityElement(Document document, Commodity commodity) {
         document.getElementById("id").text("Id: " + commodity.getId());
@@ -98,5 +126,10 @@ public class HtmlHelper {
         document.getElementById("birthDate").text("Birth Date: " + user.getBirthDate());
         document.getElementById("address").text(user.getAddress());
         document.getElementById("credit").text("Credit: " + user.getCredit());
+        document.getElementsByTag("table").append(GetBuyList(user));
+    }
+
+    public static String Get404Page() throws IOException {
+        return Jsoup.parse(new File("src/main/static/404.html")).html();
     }
 }

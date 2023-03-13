@@ -18,8 +18,13 @@ public class User {
     private String address;
     @Getter @Setter
     private int credit;
-    @Getter
     private transient List<Commodity> buyList;
+
+    public List<Commodity> getBuyList() {
+        if (buyList == null)
+            buyList = new ArrayList<>();
+        return buyList;
+    }
 
     public User(User user){
         password = user.password;
@@ -32,7 +37,7 @@ public class User {
     }
 
     public boolean addToBuyList(Commodity commodity){
-        var ind = buyList.indexOf(commodity);
+        var ind = getBuyList().indexOf(commodity);
         if (ind != -1)
             return false;
         buyList.add(commodity);
@@ -40,7 +45,7 @@ public class User {
     }
 
     public boolean removeFromBuyList(Commodity commodity){
-        var ind = buyList.indexOf(commodity);
+        var ind = getBuyList().indexOf(commodity);
         if (ind == -1)
             return false;
         buyList.remove(ind);

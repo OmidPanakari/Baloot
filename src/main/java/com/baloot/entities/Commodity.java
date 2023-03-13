@@ -61,9 +61,12 @@ public class Commodity {
         return res / ratings.size();
     }
 
-    public List<String> getCategoryList(String categories) {
-        var temp = categories.substring(0, categories.length() - 2);
-        return Arrays.stream(temp.split("[, ]")).toList();
+    public String getCategoryString() {
+        StringBuilder result = new StringBuilder();
+        for (var category:categories){
+            result.append(category).append(", ");
+        }
+        return result.toString();
     }
 
     public void addRating(CommodityRate commodityRate) {

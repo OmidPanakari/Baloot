@@ -33,6 +33,14 @@ public class GetCommodityById implements Handler {
         HtmlHelper.MakeCommodityElement(document, commodity);
         var commentsTable = HtmlHelper.GetCommentsTable(commodity.getComments(), username);
         document.getElementsByTag("table").get(0).append(commentsTable);
+        if (username != null){
+            document.getElementById("buy").attr("action", "/addToBuyList/"+username+"/"+commodityId);
+            document.getElementById("buy").children().get(0).removeAttr("disabled");
+            document.getElementById("rate").attr("action", "/rateCommodity/"+username+"/"+commodityId);
+            document.getElementById("rate").children().get(2).removeAttr("disabled");
+        }
+
+
         context.contentType("text/html");
         context.result(document.toString());
     }
