@@ -19,69 +19,70 @@ public class HtmlHelper {
         }
         return result.toString();
     }
+
     public static String GetCommentRow(Comment comment, String username) {
         var res =
                 "<tr>" +
-                "<td>" + comment.getUsername() + "</td>" +
-                "<td>" + comment.getText() + "</td>" +
-                "<td>" + comment.getDate() + "</td>";
+                        "<td>" + comment.getUsername() + "</td>" +
+                        "<td>" + comment.getText() + "</td>" +
+                        "<td>" + comment.getDate() + "</td>";
         if (username != null) {
             res +=
-                "<td>" +
-                "<form action=\"/voteComment/" + comment.getId() + "\" method=\"POST\">" +
-                "<label for=\"\">" + comment.getLikes() + "</label>" +
-                "<input id=\"like_vote\" type=\"hidden\" name=\"vote\" value=\"1\"/>" +
-                "<input id=\"like_username\" type=\"hidden\" name=\"username\" value=\"" + username + "\"/>" +
-                "<button type=\"submit\">like</button>" +
-                "</form>" +
-                "</td>";
+                    "<td>" +
+                            "<form action=\"/voteComment/" + comment.getId() + "\" method=\"POST\">" +
+                            "<label for=\"\">" + comment.getLikes() + "</label>" +
+                            "<input id=\"like_vote\" type=\"hidden\" name=\"vote\" value=\"1\"/>" +
+                            "<input id=\"like_username\" type=\"hidden\" name=\"username\" value=\"" + username + "\"/>" +
+                            "<button type=\"submit\">like</button>" +
+                            "</form>" +
+                            "</td>";
             res +=
-                "<td>" +
-                "<form action=\"/voteComment/" + comment.getId() + "\" method=\"POST\">" +
-                "<label for=\"\">" + comment.getDislikes() + "</label>" +
-                "<input id=\"dislike_vote\" type=\"hidden\" name=\"vote\" value=\"-1\"/>" +
-                "<input id=\"dislike_username\" type=\"hidden\" name=\"username\" value=\"" + username + "\"/>" +
-                "<button type=\"submit\">dislike</button>" +
-                "</form>" +
-                "</td>";
-        }
-        else {
+                    "<td>" +
+                            "<form action=\"/voteComment/" + comment.getId() + "\" method=\"POST\">" +
+                            "<label for=\"\">" + comment.getDislikes() + "</label>" +
+                            "<input id=\"dislike_vote\" type=\"hidden\" name=\"vote\" value=\"-1\"/>" +
+                            "<input id=\"dislike_username\" type=\"hidden\" name=\"username\" value=\"" + username + "\"/>" +
+                            "<button type=\"submit\">dislike</button>" +
+                            "</form>" +
+                            "</td>";
+        } else {
             res +=
-                "<td>" +
-                "<button disabled>like</button>" +
-                "</td>";
+                    "<td>" +
+                            "<button disabled>like</button>" +
+                            "</td>";
             res +=
-                "<td>" +
-                "<button disabled>dislike</button>" +
-                "</td>";
+                    "<td>" +
+                            "<button disabled>dislike</button>" +
+                            "</td>";
         }
         res += "</tr>";
         return res;
     }
 
-    public static String GetBuyList(User user){
+    public static String GetBuyList(User user) {
         StringBuilder result = new StringBuilder();
-        for (var commodity : user.getBuyList()){
+        for (var commodity : user.getBuyList()) {
             result.append(GetBuyListRow(commodity, user.getUsername()));
         }
         return result.toString();
     }
 
-    private static String GetBuyListRow(Commodity commodity, String username){
-        return "<tr>"+"<th>"+commodity.getId()+"</th>"+
-            "<th>"+commodity.getName()+"</th>"+
-            "<th>"+ commodity.getProviderId()+"</th>"+
-            "<th>"+commodity.getPrice()+"</th>"+
-            "<th>"+commodity.getCategoryString()+"</th>"+
-            "<th>"+commodity.getRating()+"</th>"+
-            "<th>"+commodity.getInStock()+"</th>"+
+    private static String GetBuyListRow(Commodity commodity, String username) {
+        return  "<tr>" + "<th>" + commodity.getId() + "</td>" +
+                "<td>" + commodity.getName() + "</td>" +
+                "<td>" + commodity.getProviderId() + "</td>" +
+                "<td>" + commodity.getPrice() + "</td>" +
+                "<td>" + commodity.getCategoryString() + "</td>" +
+                "<td>" + commodity.getRating() + "</td>" +
+                "<td>" + commodity.getInStock() + "</td>" +
                 "<td><a href=\"/commodities/" + commodity.getId() + "\">Link</a></td>" +
-            "<td>" +
-                "<form action=\"/removeFromBuyList/"+username+"/"+commodity.getId()+"\" method=\"GET\" >"+
-                    "<button type=\"submit\">Remove</button>"+
-                "</form>"+
-            "</td>"+"</tr>";
+                "<td>" +
+                "<form action=\"/removeFromBuyList/" + username + "/" + commodity.getId() + "\" method=\"GET\" >" +
+                "<button type=\"submit\">Remove</button>" +
+                "</form>" +
+                "</td>" + "</tr>";
     }
+
     public static String GetCommoditiesTable(List<Commodity> commodities) {
         String result = "";
         for (var commodity : commodities) {
@@ -89,6 +90,7 @@ public class HtmlHelper {
         }
         return result;
     }
+
     private static String GetCommodityRow(Commodity commodity) {
         return  "<tr>" +
                 "<td>" + commodity.getId() + "</td>" +
@@ -101,7 +103,6 @@ public class HtmlHelper {
                 "<td>" + "<a href=\"/commodities/" + commodity.getId() + "\">Info</a>" + "</td>" +
                 "</tr>";
     }
-
 
 
     public static void MakeCommodityElement(Document document, Commodity commodity) {

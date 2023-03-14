@@ -22,8 +22,10 @@ public class GetProviderById implements Handler {
     public void handle(@NotNull Context context) throws Exception {
         var providerId = Integer.parseInt(context.pathParam("providerId"));
         var response = providerService.getProviderById(providerId);
-        if (!response.isSuccess())
-            context.redirect("/forbidden");
+        if (!response.isSuccess()) {
+            context.status(403);
+            return;
+        }
         var provider = ((DataResponse<Provider>)response).getData();
         var html = new File("src/main/static/Provider.html");
         var document = Jsoup.parse(html, "UTF-8");

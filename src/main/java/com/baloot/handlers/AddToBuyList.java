@@ -18,7 +18,10 @@ public class AddToBuyList implements Handler {
         var username = context.pathParam("username");
         var commodityId = Integer.parseInt(context.pathParam("commodityId"));
         var response = userService.addToBuyList(new UserCommodityModel(username, commodityId));
-        if (!response.isSuccess())
-            context.redirect("/forbidden");
+        if (!response.isSuccess()) {
+            context.status(403);
+            return;
+        }
+        context.redirect("/users/" + username);
     }
 }

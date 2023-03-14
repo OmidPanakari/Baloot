@@ -1,5 +1,6 @@
 package com.baloot.handlers;
 
+import com.baloot.responses.DataResponse;
 import com.baloot.services.CommodityService;
 import com.baloot.services.UserService;
 import io.javalin.http.Context;
@@ -20,6 +21,12 @@ public class VoteComment implements Handler {
         var commentId = Integer.parseInt(context.pathParam("commentId"));
         var vote = Integer.parseInt(Objects.requireNonNull(context.formParam("vote")));
         var username = context.formParam("username");
-        userService.voteComment(username, commentId, vote);
+        var response = userService.voteComment(username, commentId, vote);
+        if (!response.isSuccess()) {
+            context.status(403);
+            return;
+        }
+        var commodityId = ((DataResponse<Integer>)response).getData();
+        context.redirect("/commodities/" + commodityId);
     }
 }

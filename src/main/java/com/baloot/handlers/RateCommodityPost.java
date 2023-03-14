@@ -21,7 +21,10 @@ public class RateCommodityPost implements Handler {
         var commodityId = Integer.parseInt(context.pathParam("commodityId"));
         var rate = Double.parseDouble(Objects.requireNonNull(context.formParam("quantity")));
         var response = commodityService.rateCommodity(new CommodityRate(username, commodityId, rate));
-        if (!response.isSuccess())
-            context.redirect("/forbidden");
+        if (!response.isSuccess()) {
+            context.status(403);
+            return;
+        }
+        context.redirect("/commodities/" + commodityId);
     }
 }

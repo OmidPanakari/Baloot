@@ -25,8 +25,10 @@ public class GetCommodityById implements Handler {
         int commodityId = Integer.parseInt(context.pathParam("commodityId"));
         var username = context.queryParam("username");
         var response = commodityService.getCommodityById(commodityId);
-        if (!response.isSuccess())
-            context.redirect("/forbidden");
+        if (!response.isSuccess()) {
+            context.status(403);
+            return;
+        }
         var commodity = ((DataResponse<Commodity>)response).getData();
         var html = new File("src/main/static/Commodity.html");
         var document = Jsoup.parse(html, "UTF-8");

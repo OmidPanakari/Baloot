@@ -1,6 +1,7 @@
 package com.baloot.services;
 
 import com.baloot.entities.Comment;
+import com.baloot.entities.Commodity;
 import com.baloot.entities.User;
 import com.baloot.models.UserCommodityModel;
 import com.baloot.models.UsernameModel;
@@ -92,7 +93,7 @@ public class UserService {
         if (comment == null)
             return new DataResponse<>(false, "Comment not found!");
         comment.voteComment(vote);
-        return new DataResponse<>(true, "Vote added.");
+        return new DataResponse<>(true, comment.getCommodityId());
     }
 
     private boolean isUserValid(User user) {

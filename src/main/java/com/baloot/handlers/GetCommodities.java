@@ -24,8 +24,10 @@ public class GetCommodities implements Handler {
     @Override
     public void handle(@NotNull Context context) throws Exception {
         var response = commodityService.getCommodities();
-        if (!response.isSuccess())
-            context.redirect("/forbidden");
+        if (!response.isSuccess()) {
+            context.status(403);
+            return;
+        }
         var commodities = ((DataResponse<List<Commodity>>)response).getData();
         var html = new File("src/main/static/Commodities.html");
         var document = Jsoup.parse(html, "UTF-8");

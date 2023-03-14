@@ -24,8 +24,10 @@ public class SearchCommoditiesByPrice implements Handler {
         var startPrice = Integer.parseInt(context.pathParam("startPrice"));
         var endPrice = Integer.parseInt(context.pathParam("endPrice"));
         var response = commodityService.getCommoditiesByPrice(startPrice, endPrice);
-        if (!response.isSuccess())
-            context.redirect("/forbidden");
+        if (!response.isSuccess()) {
+            context.status(403);
+            return;
+        }
         var commodities = ((DataResponse<List<Commodity>>)response).getData();
         var html = new File("src/main/static/Commodities.html");
         var document = Jsoup.parse(html, "UTF-8");

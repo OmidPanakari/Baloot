@@ -23,8 +23,10 @@ public class SearchCommoditiesByCategory implements Handler {
     public void handle(@NotNull Context context) throws Exception {
         var category = context.pathParam("category");
         var response = commodityService.getCommoditiesByCategory(category);
-        if (!response.isSuccess())
-            context.redirect("/forbidden");
+        if (!response.isSuccess()) {
+            context.status(403);
+            return;
+        }
         var commodities = ((DataResponse<List<Commodity>>)response).getData();
         var html = new File("src/main/static/Commodities.html");
         var document = Jsoup.parse(html, "UTF-8");

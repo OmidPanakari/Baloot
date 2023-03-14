@@ -18,8 +18,10 @@ public class AddCredit implements Handler {
         var username = context.pathParam("username");
         var credit = Integer.parseInt(context.pathParam("credit"));
         var response = userService.addCredit(username, credit);
-        if (!response.isSuccess())
-            context.redirect("/forbidden");
+        if (!response.isSuccess()) {
+            context.status(403);
+            return;
+        }
         context.redirect("/users/" + username);
     }
 }

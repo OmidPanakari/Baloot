@@ -22,8 +22,10 @@ public class GetUserById implements Handler {
     public void handle(@NotNull Context context) throws Exception {
         var username = context.pathParam("username");
         var response = userService.getUser(username);
-        if (!response.isSuccess())
-            context.redirect("/forbidden");
+        if (!response.isSuccess()) {
+            context.status(403);
+            return;
+        }
         var user = ((DataResponse<User>)response).getData();
         var html = new File("src/main/static/User.html");
         var document = Jsoup.parse(html, "UTF-8");
