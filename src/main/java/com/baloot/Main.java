@@ -1,13 +1,14 @@
 package com.baloot;
 
-import com.baloot.repositories.*;
-import com.baloot.services.CommodityService;
-import com.baloot.services.ProviderService;
-import com.baloot.services.UserService;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import com.baloot.dataAccess.Database;
+import com.baloot.dataAccess.repositories.CommentRepository;
+import com.baloot.dataAccess.repositories.CommodityRepository;
+import com.baloot.dataAccess.repositories.ProviderRepository;
+import com.baloot.dataAccess.repositories.UserRepository;
+import com.baloot.presentation.Server;
+import com.baloot.service.CommodityService;
+import com.baloot.service.ProviderService;
+import com.baloot.service.UserService;
 
 public class Main {
 

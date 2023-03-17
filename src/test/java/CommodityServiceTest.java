@@ -1,16 +1,15 @@
-import com.baloot.entities.Commodity;
-import com.baloot.entities.CommodityRate;
-import com.baloot.entities.Provider;
-import com.baloot.entities.User;
-import com.baloot.repositories.CommodityRepository;
-import com.baloot.repositories.ProviderRepository;
-import com.baloot.repositories.UserRepository;
+import com.baloot.core.entities.Commodity;
+import com.baloot.core.entities.CommodityRate;
+import com.baloot.core.entities.Provider;
+import com.baloot.core.entities.User;
+import com.baloot.dataAccess.repositories.CommodityRepository;
+import com.baloot.dataAccess.repositories.ProviderRepository;
+import com.baloot.dataAccess.repositories.UserRepository;
 import com.baloot.responses.DataResponse;
-import com.baloot.services.CommodityService;
+import com.baloot.service.CommodityService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,10 +18,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.xml.crypto.Data;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

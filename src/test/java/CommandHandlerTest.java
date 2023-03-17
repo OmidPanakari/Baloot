@@ -1,12 +1,15 @@
-import com.baloot.CommandHandler;
-import com.baloot.entities.Comment;
-import com.baloot.entities.Commodity;
-import com.baloot.entities.Provider;
-import com.baloot.entities.User;
-import com.baloot.repositories.*;
-import com.baloot.services.CommodityService;
-import com.baloot.services.ProviderService;
-import com.baloot.services.UserService;
+import com.baloot.core.entities.Commodity;
+import com.baloot.core.entities.Provider;
+import com.baloot.core.entities.User;
+import com.baloot.dataAccess.Database;
+import com.baloot.dataAccess.repositories.CommentRepository;
+import com.baloot.dataAccess.repositories.CommodityRepository;
+import com.baloot.dataAccess.repositories.ProviderRepository;
+import com.baloot.dataAccess.repositories.UserRepository;
+import com.baloot.presentation.CommandHandler;
+import com.baloot.service.CommodityService;
+import com.baloot.service.ProviderService;
+import com.baloot.service.UserService;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
@@ -15,13 +18,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CommandHandlerTest {
@@ -31,7 +30,7 @@ public class CommandHandlerTest {
     public static List<Commodity> commodities;
     public static Gson gson;
     @Before
-    public void setupApplication() throws Exception {
+    public void setupApplication() {
         var database = new Database();
 
         var userRepository = new UserRepository(database);
