@@ -68,7 +68,7 @@ public class HtmlHelper {
     }
 
     private static String GetBuyListRow(Commodity commodity, String username) {
-        return  "<tr>" + "<th>" + commodity.getId() + "</td>" +
+        return "<tr>" + "<th>" + commodity.getId() + "</td>" +
                 "<td>" + commodity.getName() + "</td>" +
                 "<td>" + commodity.getProviderId() + "</td>" +
                 "<td>" + commodity.getPrice() + "</td>" +
@@ -92,7 +92,7 @@ public class HtmlHelper {
     }
 
     private static String GetCommodityRow(Commodity commodity) {
-        return  "<tr>" +
+        return "<tr>" +
                 "<td>" + commodity.getId() + "</td>" +
                 "<td>" + commodity.getName() + "</td>" +
                 "<td>" + commodity.getProviderId() + "</td>" +
@@ -128,5 +128,6 @@ public class HtmlHelper {
         document.getElementById("address").text(user.getAddress());
         document.getElementById("credit").text("Credit: " + user.getCredit());
         document.getElementsByTag("table").append(GetBuyList(user));
+        document.getElementById("form_credit").attr("action", "/addCredit/" + user.getUsername() + "/");
     }
 }

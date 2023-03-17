@@ -31,6 +31,7 @@ public class Server{
         app.get("/providers/{providerId}", new GetProviderById(providerService));
         app.get("/users/{username}", new GetUserById(userService));
         app.get("/addCredit/{username}/{credit}", new AddCredit(userService));
+        app.post("/addCredit/{username}/", new AddCreditPost(userService));
         app.get("/addToBuyList/{username}/{commodityId}", new AddToBuyList(userService));
         app.get("/removeFromBuyList/{username}/{commodityId}", new RemoveFromBuyList(userService));
         app.get("/rateCommodity/{username}/{commodityId}/{rate}", new RateCommodity(commodityService));
