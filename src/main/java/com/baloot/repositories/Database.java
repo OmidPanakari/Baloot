@@ -28,20 +28,27 @@ public class Database {
     @Getter
     private List<Comment> comments;
 
-    public Database() throws IOException {
+    public Database() {
+        users = new ArrayList<>();
+        providers = new ArrayList<>();
+        commodities = new ArrayList<>();
+        comments = new ArrayList<>();
+    }
+
+    public void init() throws IOException {
         var gson = new Gson();
         var userJson = getUrl("http://5.253.25.110:5000/api/users");
         var type = new TypeToken<List<User>>(){}.getType();
-        users = gson.fromJson(userJson, type);
+        users.addAll(gson.fromJson(userJson, type));
         var providersJson = getUrl("http://5.253.25.110:5000/api/providers");
         type = new TypeToken<List<Provider>>(){}.getType();
-        providers = gson.fromJson(providersJson, type);
+        providers.addAll(gson.fromJson(providersJson, type));
         var commentsJson = getUrl("http://5.253.25.110:5000/api/comments");
         type = new TypeToken<List<Comment>>(){}.getType();
-        comments = gson.fromJson(commentsJson, type);
+        comments.addAll(gson.fromJson(commentsJson, type));
         var commoditiesJson = getUrl("http://5.253.25.110:5000/api/commodities");
         type = new TypeToken<List<Commodity>>(){}.getType();
-        commodities = gson.fromJson(commoditiesJson, type);
+        commodities.addAll(gson.fromJson(commoditiesJson, type));
         comments.forEach(c -> c.setUsername(users.stream()
                 .filter(u -> Objects.equals(u.getEmail(), c.getUserEmail()))
                 .findFirst().

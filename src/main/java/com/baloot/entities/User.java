@@ -19,11 +19,18 @@ public class User {
     @Getter @Setter
     private int credit;
     private transient List<Commodity> buyList;
+    private transient List<Commodity> purchased;
 
     public List<Commodity> getBuyList() {
         if (buyList == null)
             buyList = new ArrayList<>();
         return buyList;
+    }
+
+    public List<Commodity> getPurchased() {
+        if (purchased == null)
+            purchased = new ArrayList<>();
+        return purchased;
     }
 
     public User(User user){
@@ -34,6 +41,7 @@ public class User {
         username = user.username;
         birthDate = user.birthDate;
         buyList = new ArrayList<>();
+        purchased = new ArrayList<>();
     }
 
     public boolean addToBuyList(Commodity commodity){
@@ -49,6 +57,16 @@ public class User {
         if (ind == -1)
             return false;
         buyList.remove(ind);
+        return true;
+    }
+
+    public boolean purchaseBuyList() {
+        var price = buyList.stream().mapToInt(Commodity::getPrice).sum();
+        if (credit < price)
+            return false;
+        credit -= price;
+        purchased.addAll(buyList);
+        buyList.clear();
         return true;
     }
 

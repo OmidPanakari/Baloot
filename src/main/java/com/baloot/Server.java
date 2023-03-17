@@ -37,7 +37,8 @@ public class Server{
         app.get("/rateCommodity/{username}/{commodityId}/{rate}", new RateCommodity(commodityService));
         app.post("/rateCommodity/{username}/{commodityId}", new RateCommodityPost(commodityService));
         app.post("/voteComment/{commentId}", new VoteComment(userService));
-        app.get("commodities/search/{startPrice}/{endPrice}", new SearchCommoditiesByPrice(commodityService));
-        app.get("commodities/search/{category}", new SearchCommoditiesByCategory(commodityService));
+        app.get("/commodities/search/{startPrice}/{endPrice}", new SearchCommoditiesByPrice(commodityService));
+        app.get("/commodities/search/{category}", new SearchCommoditiesByCategory(commodityService));
+        app.post("/users/{username}/purchase", new PurchaseBuyList(userService));
     }
 }

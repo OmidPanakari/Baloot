@@ -11,6 +11,7 @@ import com.baloot.repositories.UserRepository;
 import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,6 +95,15 @@ public class UserService {
             return new DataResponse<>(false, "Comment not found!");
         comment.voteComment(vote);
         return new DataResponse<>(true, comment.getCommodityId());
+    }
+
+    public Response purchaseBuyList(String username) {
+        var user = userRepository.findUser(username);
+        if (user == null)
+            return new DataResponse<>(false, "User not found!");
+        if (!user.purchaseBuyList())
+            return new DataResponse<>(false, "Not enough credit!");
+        return new DataResponse<>(true, "Buy list purchased.");
     }
 
     private boolean isUserValid(User user) {

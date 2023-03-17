@@ -67,6 +67,14 @@ public class HtmlHelper {
         return result.toString();
     }
 
+    public static String GetPurchasedList(User user) {
+        StringBuilder result = new StringBuilder();
+        for (var commodity : user.getPurchased()) {
+            result.append(GetPurchasedRow(commodity, user.getUsername()));
+        }
+        return result.toString();
+    }
+
     private static String GetBuyListRow(Commodity commodity, String username) {
         return "<tr>" + "<th>" + commodity.getId() + "</td>" +
                 "<td>" + commodity.getName() + "</td>" +
@@ -80,6 +88,19 @@ public class HtmlHelper {
                 "<form action=\"/removeFromBuyList/" + username + "/" + commodity.getId() + "\" method=\"GET\" >" +
                 "<button type=\"submit\">Remove</button>" +
                 "</form>" +
+                "</td>" + "</tr>";
+    }
+
+    private static String GetPurchasedRow(Commodity commodity, String username) {
+        return "<tr>" + "<th>" + commodity.getId() + "</td>" +
+                "<td>" + commodity.getName() + "</td>" +
+                "<td>" + commodity.getProviderId() + "</td>" +
+                "<td>" + commodity.getPrice() + "</td>" +
+                "<td>" + commodity.getCategoryString() + "</td>" +
+                "<td>" + commodity.getRating() + "</td>" +
+                "<td>" + commodity.getInStock() + "</td>" +
+                "<td><a href=\"/commodities/" + commodity.getId() + "\">Link</a></td>" +
+                "<td>" +
                 "</td>" + "</tr>";
     }
 
@@ -127,7 +148,10 @@ public class HtmlHelper {
         document.getElementById("birthDate").text("Birth Date: " + user.getBirthDate());
         document.getElementById("address").text(user.getAddress());
         document.getElementById("credit").text("Credit: " + user.getCredit());
-        document.getElementsByTag("table").append(GetBuyList(user));
+        document.getElementById("table_buylist").append(GetBuyList(user));
+        document.getElementById("table_purchased").append(GetPurchasedList(user));
         document.getElementById("form_credit").attr("action", "/addCredit/" + user.getUsername() + "/");
+        document.getElementById("form_payment").attr("action",
+                "/users/" + user.getUsername() + "/purchase/");
     }
 }

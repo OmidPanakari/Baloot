@@ -18,6 +18,7 @@ public class Main {
 
     public static Server setup() throws Exception {
         var database = new Database();
+        database.init();
 
         var userRepository = new UserRepository(database);
         var providerRepository = new ProviderRepository(database);
