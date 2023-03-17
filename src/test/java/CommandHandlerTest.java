@@ -14,10 +14,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -29,7 +29,7 @@ public class CommandHandlerTest {
     public static List<Provider> providers;
     public static List<Commodity> commodities;
     public static Gson gson;
-    @Before
+    @BeforeEach
     public void setupApplication() {
         var database = new Database();
 
@@ -45,7 +45,7 @@ public class CommandHandlerTest {
         commandHandler =  new CommandHandler(userService, providerService, commodityService);
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupData() throws FileNotFoundException {
         gson = new Gson();
         var reader = new JsonReader(new FileReader("src/test/resources/users.json"));
@@ -62,21 +62,21 @@ public class CommandHandlerTest {
     @Test
     public void addUser_NewUser_Success() {
         var response = commandHandler.executeCommand("addUser " + gson.toJson(users.get(0)));
-        Assert.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":\"User added.\"}"),
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":\"User added.\"}"),
                 JsonParser.parseString(response));
     }
 
     @Test
     public void addUser_WrongUsername_Fail() {
         var response = commandHandler.executeCommand("addUser " + gson.toJson(users.get(1)));
-        Assert.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"User fields are not valid!\"}"),
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"User fields are not valid!\"}"),
                 JsonParser.parseString(response));
     }
 
     @Test
     public void addProvider_NewProvider_Success() {
         var response = commandHandler.executeCommand("addProvider " + gson.toJson(providers.get(0)));
-        Assert.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":\"Provider added.\"}"),
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":\"Provider added.\"}"),
                 JsonParser.parseString(response));
     }
 
@@ -84,7 +84,7 @@ public class CommandHandlerTest {
     public void addProvider_DuplicateProvider_Fail() {
         commandHandler.executeCommand("addProvider " + gson.toJson(providers.get(0)));
         var response = commandHandler.executeCommand("addProvider " + gson.toJson(providers.get(0)));
-        Assert.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Provider id is taken!\"}"),
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Provider id is taken!\"}"),
                 JsonParser.parseString(response));
     }
 
@@ -92,7 +92,7 @@ public class CommandHandlerTest {
     public void addCommodity_NewCommodity_Success() {
         commandHandler.executeCommand("addProvider " + gson.toJson(providers.get(0)));
         var response = commandHandler.executeCommand("addCommodity " + gson.toJson(commodities.get(0)));
-        Assert.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":\"Commodity added.\"}"),
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":\"Commodity added.\"}"),
                 JsonParser.parseString(response));
     }
 
@@ -101,14 +101,14 @@ public class CommandHandlerTest {
         commandHandler.executeCommand("addProvider " + gson.toJson(providers.get(0)));
         commandHandler.executeCommand("addCommodity " + gson.toJson(commodities.get(0)));
         var response = commandHandler.executeCommand("addCommodity " + gson.toJson(commodities.get(0)));
-        Assert.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Commodity already exists.\"}"),
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Commodity already exists.\"}"),
                 JsonParser.parseString(response));
     }
 
     @Test
     public void addCommodity_ProviderNotExist_Fail() {
         var response = commandHandler.executeCommand("addCommodity " + gson.toJson(commodities.get(0)));
-        Assert.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Provider not found!\"}"),
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Provider not found!\"}"),
                 JsonParser.parseString(response));
     }
 
@@ -117,7 +117,7 @@ public class CommandHandlerTest {
         commandHandler.executeCommand("addProvider " + gson.toJson(providers.get(0)));
         commandHandler.executeCommand("addCommodity " + gson.toJson(commodities.get(0)));
         var response = commandHandler.executeCommand("getCommoditiesList");
-        Assert.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":[{\"id\":1,\"name\":\"name\",\"price\":1000" +
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":[{\"id\":1,\"name\":\"name\",\"price\":1000" +
                 ",\"categories\":[\"cat1\",\"cat2\"],\"rating\":0.0,\"inStock\":50,\"providerId\":1}]}"),
                 JsonParser.parseString(response));
     }
@@ -129,7 +129,7 @@ public class CommandHandlerTest {
         commandHandler.executeCommand("addUser " + gson.toJson(users.get(0)));
         var response = commandHandler.executeCommand("rateCommodity {\"username\":\"username\",\"commodityId\":1" +
                 ",\"score\":8}");
-        Assert.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":\"Rate added.\"}"),
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":\"Rate added.\"}"),
                 JsonParser.parseString(response));
     }
 
@@ -139,7 +139,7 @@ public class CommandHandlerTest {
         commandHandler.executeCommand("addUser " + gson.toJson(users.get(0)));
         var response = commandHandler.executeCommand("rateCommodity {\"username\":\"username\",\"commodityId\":1" +
                 ",\"score\":8}");
-        Assert.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Commodity not found!\"}"),
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Commodity not found!\"}"),
                 JsonParser.parseString(response));
     }
 
@@ -149,7 +149,7 @@ public class CommandHandlerTest {
         commandHandler.executeCommand("addCommodity " + gson.toJson(commodities.get(0)));
         var response = commandHandler.executeCommand("rateCommodity {\"username\":\"username\",\"commodityId\":1" +
                 ",\"score\":8}");
-        Assert.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"User not found!\"}"),
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"User not found!\"}"),
                 JsonParser.parseString(response));
     }
 
@@ -160,7 +160,7 @@ public class CommandHandlerTest {
         commandHandler.executeCommand("addUser " + gson.toJson(users.get(0)));
         var response = commandHandler.executeCommand("addToBuyList {\"username\":\"username\",\"commodityId\":1" +
                 "}");
-        Assert.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":\"Commodity added to the buy list.\"}"),
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":\"Commodity added to the buy list.\"}"),
                 JsonParser.parseString(response));
     }
 
@@ -172,7 +172,7 @@ public class CommandHandlerTest {
         commandHandler.executeCommand("addToBuyList {\"username\":\"username\",\"commodityId\":1}");
         var response = commandHandler.executeCommand("addToBuyList {\"username\":\"username\",\"commodityId\":1" +
                 "}");
-        Assert.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Commodity already exists in " +
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Commodity already exists in " +
                         "the buy list!\"}"),
                 JsonParser.parseString(response));
     }
@@ -185,7 +185,7 @@ public class CommandHandlerTest {
         commandHandler.executeCommand("addToBuyList {\"username\":\"username\",\"commodityId\":1}");
         var response = commandHandler.executeCommand("removeFromBuyList {\"username\":\"username\",\"commodityId\":1" +
                 "}");
-        Assert.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":\"Commodity removed from the buy " +
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":\"Commodity removed from the buy " +
                         "list!\"}"),
                 JsonParser.parseString(response));
     }
@@ -197,7 +197,7 @@ public class CommandHandlerTest {
         commandHandler.executeCommand("addUser " + gson.toJson(users.get(0)));
         var response = commandHandler.executeCommand("removeFromBuyList {\"username\":\"username\",\"commodityId\":1" +
                 "}");
-        Assert.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Commodity does not exist in the " +
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Commodity does not exist in the " +
                         "buy list.\"}"),
                 JsonParser.parseString(response));
     }
@@ -207,7 +207,7 @@ public class CommandHandlerTest {
         commandHandler.executeCommand("addProvider " + gson.toJson(providers.get(0)));
         commandHandler.executeCommand("addCommodity " + gson.toJson(commodities.get(0)));
         var response = commandHandler.executeCommand("getCommodityById {\"id\":1}");
-        Assert.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":{\"id\":1,\"name\":\"name\",\"price\":1000" +
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":{\"id\":1,\"name\":\"name\",\"price\":1000" +
                 ",\"categories\":[\"cat1\",\"cat2\"],\"rating\":0.0,\"inStock\":50,\"providerId\":1}}"),
                 JsonParser.parseString(response));
     }
@@ -215,7 +215,7 @@ public class CommandHandlerTest {
     @Test
     public void getCommodityById_CommodityNotExists_Fail() {
         var response = commandHandler.executeCommand("getCommodityById {\"id\":1}");
-        Assert.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Commodity not found!\"}"),
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Commodity not found!\"}"),
                 JsonParser.parseString(response));
     }
 
@@ -225,14 +225,14 @@ public class CommandHandlerTest {
         commandHandler.executeCommand("addCommodity " + gson.toJson(commodities.get(0)));
         commandHandler.executeCommand("addCommodity " + gson.toJson(commodities.get(1)));
         var response = commandHandler.executeCommand("getCommoditiesByCategory {\"category\":\"cat1\"}");
-        Assert.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":[{\"id\":1,\"name\":\"name\",\"price\":1000" +
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":[{\"id\":1,\"name\":\"name\",\"price\":1000" +
                 ",\"categories\":[\"cat1\",\"cat2\"],\"rating\":0.0,\"inStock\":50,\"providerId\":1}]}"),
                 JsonParser.parseString(response));
     }
     @Test
     public void getCommoditiesByCategory_EmptyCategory_EmptyCommoditiesList() {
         var response = commandHandler.executeCommand("getCommoditiesByCategory {\"category\":\"cat1\"}");
-        Assert.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":[]}"), JsonParser.parseString(response));
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":[]}"), JsonParser.parseString(response));
     }
 
     @Test
@@ -243,7 +243,7 @@ public class CommandHandlerTest {
         commandHandler.executeCommand("addToBuyList {\"username\":\"username\",\"commodityId\":1" +
                 "}");
         var response = commandHandler.executeCommand("getBuyList {\"username\":\"username\"}");
-        Assert.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":[{\"id\":1,\"name\":\"name\"," +
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":true,\"data\":[{\"id\":1,\"name\":\"name\"," +
                 "\"price\":1000,\"categories\":[\"cat1\",\"cat2\"],\"rating\":0.0,\"inStock\":49,\"providerId\":1}]}"),
                 JsonParser.parseString(response));
     }
@@ -251,7 +251,7 @@ public class CommandHandlerTest {
     @Test
     public void executeCommand_InvalidCommand_Fail() {
         var response = commandHandler.executeCommand("invalidCommand");
-        Assert.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Not a valid command!\"}"),
+        Assertions.assertEquals(JsonParser.parseString("{\"success\":false,\"data\":\"Not a valid command!\"}"),
                 JsonParser.parseString(response));
     }
 }
