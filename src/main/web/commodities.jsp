@@ -64,7 +64,7 @@
     <tr>
         <td><%=commodity.getId()%></td>
         <td><%=commodity.getName()%></td>
-        <td><%=commodity.getProviderId()%></td>
+        <td><%=commodity.getProviderName()%></td>
         <td><%=commodity.getPrice()%></td>
         <td><%=commodity.getCategoryString()%></td>
         <td><%=commodity.getRating()%></td>

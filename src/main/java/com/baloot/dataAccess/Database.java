@@ -1,9 +1,6 @@
 package com.baloot.dataAccess;
 
-import com.baloot.core.entities.Comment;
-import com.baloot.core.entities.Commodity;
-import com.baloot.core.entities.Provider;
-import com.baloot.core.entities.User;
+import com.baloot.core.entities.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
@@ -27,12 +24,15 @@ public class Database {
     private List<Commodity> commodities;
     @Getter
     private List<Comment> comments;
+    @Getter
+    private List<Discount> discounts;
 
     public Database() {
         users = new ArrayList<>();
         providers = new ArrayList<>();
         commodities = new ArrayList<>();
         comments = new ArrayList<>();
+        discounts = new ArrayList<>();
     }
 
     public void init() {
@@ -54,11 +54,18 @@ public class Database {
             type = new TypeToken<List<Commodity>>() {
             }.getType();
             commodities.addAll(gson.fromJson(commoditiesJson, type));
+            var discountsJson = getUrl("http://5.253.25.110:5000/api/discount");
+            type = new TypeToken<List<Discount>>() {}.getType();
+            discounts.addAll(gson.fromJson(discountsJson, type));
             comments = comments.stream().map(Comment::new).collect(Collectors.toList());
             comments.forEach(c -> c.setUsername(users.stream()
                     .filter(u -> Objects.equals(u.getEmail(), c.getUserEmail()))
                     .findFirst().
                     get().getUsername()));
+            commodities.forEach(c -> c.setProviderName(providers.stream()
+                    .filter(p -> p.getId() == c.getProviderId())
+                    .findFirst()
+                    .get().getName()));
             comments.forEach(c -> commodities.stream().filter(co -> co.getId() == c.getCommodityId())
                     .findFirst()
                     .get().addComment(c));

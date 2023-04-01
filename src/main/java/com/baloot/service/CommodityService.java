@@ -11,12 +11,14 @@ import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class CommodityService {
     private final ProviderRepository providerRepository;
     private final CommodityRepository commodityRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+
 
     public CommodityService(ProviderRepository providerRepository, CommodityRepository commodityRepository,
                             UserRepository userRepository, CommentRepository commentRepository) {
@@ -78,5 +80,36 @@ public class CommodityService {
         commentRepository.addComment(comment);
         commodity.addComment(comment);
         return new DataResponse<>(true, "Comment added.");
+    }
+
+    public Response getSuggestions(int commodityId) {
+        var commodity = commodityRepository.findCommodity(commodityId);
+        if (commodity == null) {
+            return new DataResponse<>(false, "Commodity not found!");
+        }
+        var commodities = commodityRepository.getCommodities();
+        var suggestions = new ArrayList<Commodity>();
+        commodities.sort((a, b) -> (int) Math.signum(calculateScore(commodity, b) - calculateScore(commodity, a)));
+        for (Commodity c : commodities) {
+            if (suggestions.size() == 5) {
+                break;
+            }
+            if (c.getId() == commodityId) {
+                continue;
+            }
+            suggestions.add(c);
+        }
+        return new DataResponse<>(true, suggestions);
+    }
+
+    private double calculateScore(Commodity a, Commodity b) {
+        boolean hasCommon = false;
+        for (String category : a.getCategories()) {
+            if (b.getCategories().contains(category)) {
+                hasCommon = true;
+                break;
+            }
+        }
+        return b.getRating() + (hasCommon ? 1:0) * 11;
     }
 }

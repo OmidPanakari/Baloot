@@ -22,6 +22,8 @@ public class Commodity {
     private int inStock;
     @Getter
     private int providerId;
+    @Getter @Setter
+    private String providerName;
     private transient List<CommodityRate> ratings;
     private transient List<Comment> comments;
 

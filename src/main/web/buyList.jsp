@@ -40,6 +40,9 @@
         <form action="" method="POST">
             <label>Submit & Pay</label>
             <input id="payment" type="hidden" name="username" value="<%=user.getUsername()%>">
+            <br/>
+            <label for="discount_text">Discount</label>
+            <input id="discount_text" type="text" name="discount" value="" />
             <button type="submit" name="action" value="pay">Payment</button>
         </form>
     </li>
@@ -63,7 +66,7 @@
     <tr>
         <td><%=commodity.getId()%></td>
         <td><%=commodity.getName()%></td>
-        <td><%=commodity.getProviderId()%></td>
+        <td><%=commodity.getProviderName()%></td>
         <td><%=commodity.getPrice()%></td>
         <td><%=commodity.getCategoryString()%></td>
         <td><%=commodity.getRating()%></td>

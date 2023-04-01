@@ -14,7 +14,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "CommodityServlet", value = "/commodities/*")
 public class CommodityServlet extends HttpServlet {
@@ -26,8 +28,11 @@ public class CommodityServlet extends HttpServlet {
         var response = service.getCommodityById(commodityId);
         if (response.isSuccess()) {
             var commodity = ((DataResponse<Commodity>) response).getData();
+            response = service.getSuggestions(commodityId);
+            var suggestions = ((DataResponse<List<Commodity>>)response).getData();
             req.setAttribute("commodity", commodity);
             req.setAttribute("comments", commodity.getComments());
+            req.setAttribute("suggestions", suggestions);
             req.getRequestDispatcher("/commodity.jsp").forward(req, resp);
         }
         else {

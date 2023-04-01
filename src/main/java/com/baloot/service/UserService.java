@@ -2,6 +2,7 @@ package com.baloot.service;
 
 import com.baloot.core.entities.Comment;
 import com.baloot.core.entities.User;
+import com.baloot.dataAccess.repositories.DiscountRepository;
 import com.baloot.service.models.UserCommodityModel;
 import com.baloot.service.models.UsernameModel;
 import com.baloot.dataAccess.repositories.CommentRepository;
@@ -17,11 +18,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final CommodityRepository commodityRepository;
     private final CommentRepository commentRepository;
+    private final DiscountRepository discountRepository;
 
-    public UserService(UserRepository userRepository, CommodityRepository commodityRepository, CommentRepository commentRepository) {
+    public UserService(UserRepository userRepository, CommodityRepository commodityRepository, CommentRepository commentRepository, DiscountRepository discountRepository) {
         this.userRepository = userRepository;
         this.commodityRepository = commodityRepository;
         this.commentRepository = commentRepository;
+        this.discountRepository = discountRepository;
     }
 
     public Response addUser(User user) {
@@ -95,11 +98,12 @@ public class UserService {
         return new DataResponse<>(true, comment.getCommodityId());
     }
 
-    public Response purchaseBuyList(String username) {
+    public Response purchaseBuyList(String username, String discountCode) {
         var user = userRepository.findUser(username);
+        var discount = discountRepository.getDiscount(discountCode);
         if (user == null)
             return new DataResponse<>(false, "User not found!");
-        if (!user.purchaseBuyList())
+        if (!user.purchaseBuyList(discount))
             return new DataResponse<>(false, "Not enough credit!");
         return new DataResponse<>(true, "Buy list purchased.");
     }

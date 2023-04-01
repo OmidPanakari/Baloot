@@ -1,10 +1,7 @@
 package com.baloot.presentation;
 
 import com.baloot.dataAccess.Database;
-import com.baloot.dataAccess.repositories.CommentRepository;
-import com.baloot.dataAccess.repositories.CommodityRepository;
-import com.baloot.dataAccess.repositories.ProviderRepository;
-import com.baloot.dataAccess.repositories.UserRepository;
+import com.baloot.dataAccess.repositories.*;
 import com.baloot.service.CommodityService;
 import com.baloot.service.ProviderService;
 import com.baloot.service.UserService;
@@ -22,6 +19,7 @@ public class StartupListener implements ServletContextListener {
         Container.register(CommodityRepository.class);
         Container.register(ProviderRepository.class);
         Container.register(UserRepository.class);
+        Container.register(DiscountRepository.class);
 
         Container.register(CommodityService.class);
         Container.register(ProviderService.class);

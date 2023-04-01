@@ -60,8 +60,11 @@ public class User {
         return true;
     }
 
-    public boolean purchaseBuyList() {
+    public boolean purchaseBuyList(Discount discount) {
         var price = getBuyList().stream().mapToInt(Commodity::getPrice).sum();
+        if (discount != null) {
+            price = price * (100 - discount.getDiscount()) / 100;
+        }
         if (credit < price)
             return false;
         credit -= price;

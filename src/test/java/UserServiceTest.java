@@ -1,6 +1,7 @@
 import com.baloot.core.entities.Commodity;
 import com.baloot.core.entities.Provider;
 import com.baloot.core.entities.User;
+import com.baloot.dataAccess.repositories.DiscountRepository;
 import com.baloot.service.models.UsernameModel;
 import com.baloot.dataAccess.repositories.CommentRepository;
 import com.baloot.dataAccess.repositories.CommodityRepository;
@@ -32,6 +33,8 @@ public class UserServiceTest {
     CommodityRepository commodityRepositoryMock;
     @Mock
     UserRepository userRepositoryMock;
+    @Mock
+    DiscountRepository discountRepository;
     private UserService userService;
     public static List<User> users;
     public static List<Provider> providers;
@@ -40,7 +43,7 @@ public class UserServiceTest {
 
     @BeforeEach
     public void setup() throws Exception{
-        userService = new UserService(userRepositoryMock, commodityRepositoryMock, commentRepositoryMock);
+        userService = new UserService(userRepositoryMock, commodityRepositoryMock, commentRepositoryMock, discountRepository);
     }
 
     @BeforeAll

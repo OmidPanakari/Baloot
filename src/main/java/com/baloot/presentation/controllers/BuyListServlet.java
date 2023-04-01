@@ -41,10 +41,11 @@ public class BuyListServlet extends HttpServlet {
         var service = Container.resolve(UserService.class);
         var session = req.getSession(false);
         var username = (String) session.getAttribute("username");
+        var discountCode = req.getParameter("discount");
         Response response;
         switch (action) {
             case "pay":
-                response = service.purchaseBuyList(username);
+                response = service.purchaseBuyList(username, discountCode);
                 break;
             case "remove":
                 int commodityId = Integer.parseInt(req.getParameter("commodityId"));

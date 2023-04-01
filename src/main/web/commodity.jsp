@@ -27,6 +27,7 @@
     String username = (String) request.getSession(false).getAttribute("username");
     Commodity commodity = (Commodity) request.getAttribute("commodity");
     List<Comment> comments = (List<Comment>) request.getAttribute("comments");
+    List<Commodity> suggestions = (List<Commodity>) request.getAttribute("suggestions");
 %>
 <a href="/">Home</a>
 <br>
@@ -112,46 +113,18 @@
         <th>In Stock</th>
         <th>Links</th>
     </tr>
+    <% for (Commodity suggestion : suggestions) { %>
     <tr>
-        <td>2341</td>
-        <td>Galaxy S22</td>
-        <td>Phone Provider No.1</td>
-        <td>34000000</td>
-        <td>Technology, Phone</td>
-        <td>8.3</td>
-        <td>17</td>
-        <td><a href="/commodities/2341">Link</a></td>
+        <td><%=suggestion.getId()%></td>
+        <td><%=suggestion.getName()%></td>
+        <td><%=suggestion.getProviderName()%></td>
+        <td><%=suggestion.getPrice()%></td>
+        <td><%=suggestion.getCategoryString()%></td>
+        <td><%=suggestion.getRating()%></td>
+        <td><%=suggestion.getInStock()%></td>
+        <td><a href="<%="/commodities/" + suggestion.getId()%>">Link</a></td>
     </tr>
-    <tr>
-        <td>4231</td>
-        <td>Galaxy S22 Plus</td>
-        <td>Phone Provider No.1</td>
-        <td>43000000</td>
-        <td>Technology, Phone</td>
-        <td>8.7</td>
-        <td>12</td>
-        <td><a href="/commodities/4231">Link</a></td>
-    </tr>
-    <tr>
-        <td>1234</td>
-        <td>Galaxy S22 Ultra</td>
-        <td>Phone Provider No.2</td>
-        <td>50000000</td>
-        <td>Technology, Phone</td>
-        <td>8.9</td>
-        <td>5</td>
-        <td><a href="/commodities/1234">Link</a></td>
-    </tr>
-    <tr>
-        <td>4321</td>
-        <td>Galaxy A53</td>
-        <td>Phone Provider No.2</td>
-        <td>16000000</td>
-        <td>Technology, Phone</td>
-        <td>8.7</td>
-        <td>11</td>
-        <td><a href="/commodities/4321">Link</a></td>
-    </tr>
+    <% } %>
 </table>
 </body>
 </html>
