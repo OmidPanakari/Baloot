@@ -104,6 +104,14 @@ public class UserService {
         return new DataResponse<>(true, "Buy list purchased.");
     }
 
+    public Response login(String username, String password) {
+        var user = userRepository.findUser(username);
+        if (user == null || !user.getPassword().equals(password)) {
+            return new DataResponse<>(false, "Username or password is not correct!");
+        }
+        return new DataResponse<>(true, "Login was successful.");
+    }
+
     private boolean isUserValid(User user) {
         Pattern userNamePattern = Pattern.compile("[a-zA-Z0-9]+");
         Matcher userNameMatcher = userNamePattern.matcher(user.getUsername());

@@ -11,8 +11,11 @@
   <title>Home</title>
 </head>
 <body>
+<%
+  String username = (String) request.getSession(false).getAttribute("username");
+%>
 <ul>
-  <li id="email">username: siri</li>
+  <li id="email">username: <%=username%></li>
   <li>
     <a href="/commodities">Commodities</a>
   </li>

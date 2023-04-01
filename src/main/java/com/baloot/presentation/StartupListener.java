@@ -11,6 +11,8 @@ import com.baloot.service.UserService;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
+import java.io.IOException;
+
 public class StartupListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -24,5 +26,7 @@ public class StartupListener implements ServletContextListener {
         Container.register(CommodityService.class);
         Container.register(ProviderService.class);
         Container.register(UserService.class);
+
+        Container.resolve(Database.class).init();
     }
 }
