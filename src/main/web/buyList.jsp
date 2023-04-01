@@ -1,4 +1,5 @@
-<%--
+<%@ page import="com.baloot.core.entities.User" %>
+<%@ page import="com.baloot.core.entities.Commodity" %><%--
   Created by IntelliJ IDEA.
   User: ompan
   Date: 3/31/2023
@@ -20,21 +21,26 @@
     </style>
 </head>
 <body>
+<%
+    User user = (User) request.getAttribute("user");
+    var buyListPrice = user.getBuyList().stream().mapToInt(Commodity::getPrice).sum();
+%>
+<a href="/">Home</a>
 <ul>
-    <li id="username">Username: Farhad</li>
-    <li id="email">Email: Farhad@gmail.com</li>
-    <li id="birthDate">Birth Date: 2000/07/21</li>
-    <li id="address">Tehran, North Karegar, No 10</li>
-    <li id="credit">Credit: 700000</li>
-    <li>Current Buy List Price: 64000000</li>
+    <li id="username">Username: <%=user.getBuyList()%></li>
+    <li id="email">Email: <%=user.getEmail()%></li>
+    <li id="birthDate">Birth Date: <%=user.getBirthDate()%></li>
+    <li id="address"><%=user.getAddress()%></li>
+    <li id="credit">Credit: <%=user.getCredit()%></li>
+    <li>Current Buy List Price: <%=buyListPrice%></li>
     <li>
         <a href="/credit">Add Credit</a>
     </li>
     <li>
         <form action="" method="POST">
             <label>Submit & Pay</label>
-            <input id="form_payment" type="hidden" name="userId" value="Farhad">
-            <button type="submit">Payment</button>
+            <input id="payment" type="hidden" name="username" value="<%=user.getUsername()%>">
+            <button type="submit" name="action" value="pay">Payment</button>
         </form>
     </li>
 </ul>
@@ -53,37 +59,23 @@
         <th></th>
         <th></th>
     </tr>
+    <% for (Commodity commodity : user.getBuyList()) { %>
     <tr>
-        <td>4231</td>
-        <td>Galaxy S22 Plus</td>
-        <td>Phone Provider No.1</td>
-        <td>43000000</td>
-        <td>Technology, Phone</td>
-        <td>8.7</td>
-        <td>12</td>
-        <td><a href="/commodities/4231">Link</a></td>
+        <td><%=commodity.getId()%></td>
+        <td><%=commodity.getName()%></td>
+        <td><%=commodity.getProviderId()%></td>
+        <td><%=commodity.getPrice()%></td>
+        <td><%=commodity.getCategoryString()%></td>
+        <td><%=commodity.getRating()%></td>
+        <td><%=commodity.getInStock()%></td>
+        <td><a href="<%="/commodities/" + commodity.getId()%>">Link</a></td>
         <td>
             <form action="" method="POST">
-                <input id="form_commodity_id" type="hidden" name="commodityId" value="4231">
-                <button type="submit">Remove</button>
+                <input id="remove_commodity" type="hidden" name="commodityId" value="<%=commodity.getId()%>">
+                <button type="submit" name="action" value="remove">Remove</button>
             </form>
         </td>
     </tr>
-    <tr>
-        <th>2341</th>
-        <th>Galaxy S21</th>
-        <th>Phone Provider No.2</th>
-        <th>21000000</th>
-        <th>Technology, Phone</th>
-        <th>8.3</th>
-        <th>17</th>
-        <td><a href="/commodities/2341">Link</a></td>
-        <td>
-            <form action="" method="POST">
-                <input id="form_commodity_id" type="hidden" name="commodityId" value="2341">
-                <button type="submit">Remove</button>
-            </form>
-        </td>
-    </tr>
+    <% } %>
     </tbody></table>
 </body></html>

@@ -12,6 +12,7 @@
     <title>400 Error</title>
 </head>
 <body>
+<a href="/">Home</a>
 <h1>400<br>Error</h1>
 </body>
 </html>

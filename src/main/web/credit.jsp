@@ -14,6 +14,7 @@
 </head>
 
 <body>
+<a href="/">Home</a>
 <form method="post" action="">
     <label>Credits:</label>
     <input name="credit" type="text" />

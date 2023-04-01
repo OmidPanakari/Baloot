@@ -28,16 +28,18 @@
     Commodity commodity = (Commodity) request.getAttribute("commodity");
     List<Comment> comments = (List<Comment>) request.getAttribute("comments");
 %>
-<span>username: <%=username%>></span>
+<a href="/">Home</a>
+<br>
+<span>username: <%=username%></span>
 <br>
 <ul>
-    <li id="id">Id: <%=commodity.getId()%>></li>
-    <li id="name">Name: <%=commodity.getName()%>>/li>
+    <li id="id">Id: <%=commodity.getId()%></li>
+    <li id="name">Name: <%=commodity.getName()%></li>
     <li id="providerName">Provider Name: <%=commodity.getProviderId()%></li>
-    <li id="price">Price: <%=commodity.getPrice()%>></li>
-    <li id="categories">Categories: <%=String.join(",", commodity.getCategories())%>></li>
-    <li id="rating">Rating: <%=commodity.getRating()%>></li>
-    <li id="inStock">In Stock: <%=commodity.getInStock()%>></li>
+    <li id="price">Price: <%=commodity.getPrice()%></li>
+    <li id="categories">Categories: <%=commodity.getCategoryString()%></li>
+    <li id="rating">Rating: <%=commodity.getRating()%></li>
+    <li id="inStock">In Stock: <%=commodity.getInStock()%></li>
 </ul>
 
 <label>Add Your Comment:</label>

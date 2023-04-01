@@ -1,5 +1,6 @@
 package com.baloot.presentation;
 
+import com.baloot.presentation.controllers.CommodityServlet;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebFilter(servletNames = {"CommoditiesServlet", "HomeServlet"})
+@WebFilter(servletNames = {"CommoditiesServlet", "HomeServlet", "CommodityServlet", "CreditServlet", "BuyListServlet"})
 public class LoginFilter implements Filter {
 
     @Override

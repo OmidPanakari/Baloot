@@ -61,11 +61,11 @@ public class User {
     }
 
     public boolean purchaseBuyList() {
-        var price = buyList.stream().mapToInt(Commodity::getPrice).sum();
+        var price = getBuyList().stream().mapToInt(Commodity::getPrice).sum();
         if (credit < price)
             return false;
         credit -= price;
-        purchased.addAll(buyList);
+        getPurchased().addAll(buyList);
         buyList.clear();
         return true;
     }

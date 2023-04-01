@@ -64,9 +64,9 @@
     <tr>
         <td><%=commodity.getId()%></td>
         <td><%=commodity.getName()%></td>
+        <td><%=commodity.getProviderId()%></td>
         <td><%=commodity.getPrice()%></td>
         <td><%=commodity.getCategoryString()%></td>
-        <td><%=commodity.getProviderId()%></td>
         <td><%=commodity.getRating()%></td>
         <td><%=commodity.getInStock()%></td>
         <td><a href="<%="/commodities/" + commodity.getId()%>">Link</a></td>

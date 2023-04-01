@@ -15,6 +15,7 @@
 <%
   String message = (String) request.getAttribute("message");
 %>
+<a href="/">Home</a>
 <h1>400<br><%=message%></h1>
 </body>
 </html>
