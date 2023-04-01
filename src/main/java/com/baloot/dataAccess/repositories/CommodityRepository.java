@@ -49,4 +49,13 @@ public class CommodityRepository {
         }
         return commoditiesListByCategory;
     }
+
+    public List<Commodity> getCommoditiesByName(String name) {
+        var commoditiesListByName = new ArrayList<Commodity>();
+        for (Commodity c : database.getCommodities()) {
+            if (c.getName().contains(name))
+                commoditiesListByName.add(c);
+        }
+        return commoditiesListByName;
+    }
 }

@@ -51,6 +51,11 @@ public class CommodityService {
         return new DataResponse<>(true, response);
     }
 
+    public Response getCommoditiesByName(String name) {
+        var response = commodityRepository.getCommoditiesByName(name);
+        return new DataResponse<>(true, response);
+    }
+
     public Response getCommoditiesByPrice(int startPrice, int endPrice) {
         var response = commodityRepository.getCommoditiesByPrice(startPrice, endPrice);
         return new DataResponse<>(true, response);

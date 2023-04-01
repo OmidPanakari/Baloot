@@ -1,4 +1,5 @@
-<%--
+<%@ page import="com.baloot.core.entities.Commodity" %>
+<%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: ompan
   Date: 3/31/2023
@@ -18,20 +19,34 @@
     </style>
 </head>
 <body>
+<%
+    String username = (String) request.getSession(false).getAttribute("username");
+    List<Commodity> commodities = (List<Commodity>) request.getAttribute("commodities");
+    var search = request.getParameter("search");
+    var searchType = request.getParameter("searchType");
+    var sort = request.getParameter("sort");
+%>
 <a href="/">Home</a>
-<p id="username">username: siri</p>
+<p id="username">username: <%=username%></p>
 <br><br>
-<form action="" method="POST">
+<form action="" method="GET">
     <label>Search:</label>
+    <% if (sort != null) { %>
+    <input type="hidden" name="sort" value="<%=sort%>" />
+    <% } %>
     <input type="text" name="search" value="">
-    <button type="submit" name="action" value="search_by_category">Search By Cagtegory</button>
-    <button type="submit" name="action" value="search_by_name">Search By Name</button>
+    <button type="submit" name="searchType" value="category">Search By Cagtegory</button>
+    <button type="submit" name="searchType" value="name">Search By Name</button>
     <button type="submit" name="action" value="clear">Clear Search</button>
 </form>
 <br><br>
-<form action="" method="POST">
+<form action="" method="GET">
     <label>Sort By:</label>
-    <button type="submit" name="action" value="sort_by_rate">Rate</button>
+    <% if (search != null && searchType != null) { %>
+    <input type="hidden" name="search" value="<%=search%>" />
+    <input type="hidden" name="searchType" value="<%=searchType%>"/>
+    <% } %>
+    <button type="submit" name="sort" value="rate">Rate</button>
 </form>
 <br><br>
 <table>
@@ -45,25 +60,17 @@
         <th>In Stock</th>
         <th>Links</th>
     </tr>
+    <% for (Commodity commodity : commodities) { %>
     <tr>
-        <td>2341</td>
-        <td>Galaxy S21</td>
-        <td>Phone Provider</td>
-        <td>21000000</td>
-        <td>Technology, Phone</td>
-        <td>8.3</td>
-        <td>17</td>
-        <td><a href="/commodities/2341">Link</a></td>
+        <td><%=commodity.getId()%></td>
+        <td><%=commodity.getName()%></td>
+        <td><%=commodity.getPrice()%></td>
+        <td><%=commodity.getCategoryString()%></td>
+        <td><%=commodity.getProviderId()%></td>
+        <td><%=commodity.getRating()%></td>
+        <td><%=commodity.getInStock()%></td>
+        <td><a href="<%="/commodities/" + commodity.getId()%>">Link</a></td>
     </tr>
-    <tr>
-        <td>4231</td>
-        <td>Onion</td>
-        <td>Vegetables Provider</td>
-        <td>3000</td>
-        <td>Vegetables</td>
-        <td>7.6</td>
-        <td>29</td>
-        <td><a href="/commodities/4231">Link</a></td>
-    </tr>
+    <% } %>
 </table>
 </body>
