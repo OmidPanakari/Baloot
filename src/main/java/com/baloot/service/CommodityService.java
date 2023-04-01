@@ -1,23 +1,29 @@
 package com.baloot.service;
 
+import com.baloot.core.entities.Comment;
 import com.baloot.core.entities.Commodity;
 import com.baloot.core.entities.CommodityRate;
+import com.baloot.dataAccess.repositories.CommentRepository;
 import com.baloot.dataAccess.repositories.CommodityRepository;
 import com.baloot.dataAccess.repositories.ProviderRepository;
 import com.baloot.dataAccess.repositories.UserRepository;
 import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
 
+import java.time.LocalDate;
+
 public class CommodityService {
     private final ProviderRepository providerRepository;
     private final CommodityRepository commodityRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     public CommodityService(ProviderRepository providerRepository, CommodityRepository commodityRepository,
-                            UserRepository userRepository) {
+                            UserRepository userRepository, CommentRepository commentRepository) {
         this.providerRepository = providerRepository;
         this.commodityRepository = commodityRepository;
         this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
     }
 
     public Response addCommodity(Commodity commodity) {
@@ -58,5 +64,14 @@ public class CommodityService {
             return new DataResponse<>(false, "User not found!");
         commodityToRate.addRating(commodityRate);
         return new DataResponse<>(true, "Rate added.");
+    }
+
+    public Response addComment(String text, String username, int commodityId) {
+        var commodity = commodityRepository.findCommodity(commodityId);
+        var user = userRepository.findUser(username);
+        var comment = new Comment(username, user.getEmail(), commodityId, text, LocalDate.now().toString());
+        commentRepository.addComment(comment);
+        commodity.addComment(comment);
+        return new DataResponse<>(true, "Comment added.");
     }
 }

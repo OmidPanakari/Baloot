@@ -17,4 +17,8 @@ public class CommentRepository {
         }
         return null;
     }
+
+    public void addComment(Comment comment) {
+        database.addComment(comment);
+    }
 }

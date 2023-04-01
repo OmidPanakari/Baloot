@@ -61,11 +61,7 @@ public class Commodity {
     }
 
     public String getCategoryString() {
-        StringBuilder result = new StringBuilder();
-        for (var category:categories){
-            result.append(category).append(", ");
-        }
-        return result.toString();
+        return String.join(",", categories);
     }
 
     public void addRating(CommodityRate commodityRate) {

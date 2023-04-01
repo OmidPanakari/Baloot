@@ -23,6 +23,17 @@ public class Comment {
     @Getter @Setter
     private transient String username;
 
+    public Comment(String username, String userEmail, int commodityId, String text, String date) {
+        this.username = username;
+        this.commodityId = commodityId;
+        this.userEmail = userEmail;
+        this.text = text;
+        this.date = date;
+        this.id = NextID++;
+        likes = 0;
+        dislikes = 0;
+    }
+
     public Comment(Comment comment) {
         this.userEmail = comment.userEmail;
         this.commodityId = comment.commodityId;

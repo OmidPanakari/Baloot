@@ -2,6 +2,7 @@ import com.baloot.core.entities.Commodity;
 import com.baloot.core.entities.CommodityRate;
 import com.baloot.core.entities.Provider;
 import com.baloot.core.entities.User;
+import com.baloot.dataAccess.repositories.CommentRepository;
 import com.baloot.dataAccess.repositories.CommodityRepository;
 import com.baloot.dataAccess.repositories.ProviderRepository;
 import com.baloot.dataAccess.repositories.UserRepository;
@@ -33,6 +34,8 @@ public class CommodityServiceTest {
     CommodityRepository commodityRepositoryMock;
     @Mock
     UserRepository userRepositoryMock;
+    @Mock
+    CommentRepository commentRepository;
     private CommodityService commodityService;
     public static List<User> users;
     public static List<Provider> providers;
@@ -41,7 +44,7 @@ public class CommodityServiceTest {
 
     @BeforeEach
     public void setup() throws Exception{
-        commodityService = new CommodityService(providerRepositoryMock, commodityRepositoryMock, userRepositoryMock);
+        commodityService = new CommodityService(providerRepositoryMock, commodityRepositoryMock, userRepositoryMock, commentRepository);
     }
 
     @BeforeAll
