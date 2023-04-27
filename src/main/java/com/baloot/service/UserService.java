@@ -29,91 +29,91 @@ public class UserService {
 
     public Response addUser(User user) {
         if (!isUserValid(user)){
-            return new DataResponse<>(false, "User fields are not valid!");
+            return DataResponse.Failed("User fields are not valid!");
         }
         userRepository.addUser(user);
-        return new DataResponse<>(true, "User added.");
+        return DataResponse.Successful();
     }
 
     public Response addToBuyList(UserCommodityModel userCommodityModel) {
         var userToAdd = userRepository.findUser(userCommodityModel.getUsername());
         var commodity = commodityRepository.findCommodity(userCommodityModel.getCommodityId());
         if (commodity == null)
-            return new DataResponse<>(false, "Commodity not found!");
+            return DataResponse.Failed("Commodity not found!");
         if (userToAdd == null)
-            return new DataResponse<>(false, "User not found!");
+            return DataResponse.Failed("User not found!");
         if (commodity.getInStock() == 0)
-            return new DataResponse<>(false, "Not enough stock!");
+            return DataResponse.Failed("Not enough stock!");
         if (userToAdd.addToBuyList(commodity)) {
             commodity.setInStock(commodity.getInStock() - 1);
-            return new DataResponse<>(true, "Commodity added to the buy list.");
+            return DataResponse.Successful();
         }
-        return new DataResponse<>(false, "Commodity already exists in the buy list!");
+        return DataResponse.Failed("Commodity already exists in the buy list!");
     }
 
     public Response removeFromBuyList(UserCommodityModel userCommodityModel) {
         var userToAdd = userRepository.findUser(userCommodityModel.getUsername());
         var commodity = commodityRepository.findCommodity(userCommodityModel.getCommodityId());
         if (commodity == null)
-            return new DataResponse<>(false, "Commodity not found!");
+            return DataResponse.Failed("Commodity not found!");
         if (userToAdd == null)
-            return new DataResponse<>(false, "User not found!");
+            return DataResponse.Failed("User not found!");
         if (userToAdd.removeFromBuyList(commodity)) {
             commodity.setInStock(commodity.getInStock() + 1);
-            return new DataResponse<>(true, "Commodity removed from the buy list!");
+            return DataResponse.Successful();
         }
-        return new DataResponse<>(false, "Commodity does not exist in the buy list.");
+        return DataResponse.Failed("Commodity does not exist in the buy list.");
     }
 
     public Response getBuyList(UsernameModel usernameModel) {
         User userToGetBuyList = userRepository.findUser(usernameModel.getUsername());
         if (userToGetBuyList == null)
-            return new DataResponse<>(false, "User not found!");
-        return new DataResponse<>(true, userToGetBuyList.getBuyList());
+            return DataResponse.Failed("User not found!");
+        return DataResponse.Successful(userToGetBuyList.getBuyList());
     }
 
     public Response getUser(String username) {
         User user = userRepository.findUser(username);
         if (user == null)
-            return new DataResponse<>(false, "User not found!");
-        return new DataResponse<>(true, user);
+            return DataResponse.Failed("User not found!");
+        return DataResponse.Successful(user);
     }
 
     public Response addCredit(String username, int credit) {
         User user = userRepository.findUser(username);
         if (user == null)
-            return new DataResponse<>(false, "User not found!");
+            return DataResponse.Failed("User not found!");
         user.setCredit(user.getCredit() + credit);
-        return new DataResponse<>(true, "User credit updated.");
+        return DataResponse.Successful("User credit updated.");
     }
 
     public Response voteComment(String username, int commentId, int vote){
         User user = userRepository.findUser(username);
         if (user == null)
-            return new DataResponse<>(false, "User not found!");
+            return DataResponse.Failed("User not found!");
         Comment comment = commentRepository.getComment(commentId);
         if (comment == null)
-            return new DataResponse<>(false, "Comment not found!");
+            return DataResponse.Failed("Comment not found!");
         comment.voteComment(vote);
-        return new DataResponse<>(true, comment.getCommodityId());
+        return DataResponse.Successful(comment.getCommodityId());
     }
 
     public Response purchaseBuyList(String username, String discountCode) {
         var user = userRepository.findUser(username);
         var discount = discountRepository.getDiscount(discountCode);
         if (user == null)
-            return new DataResponse<>(false, "User not found!");
+            return DataResponse.Failed("User not found!");
         if (!user.purchaseBuyList(discount))
-            return new DataResponse<>(false, "Not enough credit!");
-        return new DataResponse<>(true, "Buy list purchased.");
+            return DataResponse.Failed("Not enough credit!");
+        return DataResponse.Successful();
     }
 
     public Response login(String username, String password) {
         var user = userRepository.findUser(username);
         if (user == null || !user.getPassword().equals(password)) {
-            return new DataResponse<>(false, "Username or password is not correct!");
+            return DataResponse.Failed("Username or password is not correct!");
         }
-        return new DataResponse<>(true, "Login was successful.");
+        return DataResponse.Successful();
     }
 
     private boolean isUserValid(User user) {

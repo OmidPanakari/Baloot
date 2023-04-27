@@ -1,18 +1,17 @@
-package com.baloot.presentation;
+package com.baloot;
 
 import com.baloot.dataAccess.Database;
 import com.baloot.dataAccess.repositories.*;
+import com.baloot.presentation.utils.Container;
 import com.baloot.service.CommodityService;
 import com.baloot.service.ProviderService;
 import com.baloot.service.UserService;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.IOException;
-
-public class StartupListener implements ServletContextListener {
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
+@SpringBootApplication
+public class Main {
+    public static void main(String[] args) {
         Container.register(Database.class);
 
         Container.register(CommentRepository.class);
@@ -26,5 +25,7 @@ public class StartupListener implements ServletContextListener {
         Container.register(UserService.class);
 
         Container.resolve(Database.class).init();
+        SpringApplication.run(Main.class, args);
     }
 }
+

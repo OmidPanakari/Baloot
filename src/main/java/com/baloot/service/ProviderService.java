@@ -14,16 +14,16 @@ public class ProviderService {
 
     public Response addProvider(Provider provider) {
         if (providerRepository.findProvider(provider.getId()) != null)
-            return new DataResponse<>(false, "Provider id is taken!");
+            return DataResponse.Failed("Provider id is taken!");
         providerRepository.addProvider(provider);
-        return new DataResponse<>(true, "Provider added.");
+        return DataResponse.Successful();
     }
 
     public Response getProviderById(int providerId) {
         Provider provider = providerRepository.findProvider(providerId);
         if (provider == null) {
-            return new DataResponse<>(false, "Provider not found!");
+            return DataResponse.Failed("Provider not found!");
         }
-        return new DataResponse<>(true, provider);
+        return DataResponse.Successful(provider);
     }
 }

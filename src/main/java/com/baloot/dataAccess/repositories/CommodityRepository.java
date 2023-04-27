@@ -2,9 +2,13 @@ package com.baloot.dataAccess.repositories;
 
 import com.baloot.core.entities.Commodity;
 import com.baloot.dataAccess.Database;
+import com.baloot.dataAccess.utils.QueryModel;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class CommodityRepository {
     private final Database database;
@@ -21,8 +25,9 @@ public class CommodityRepository {
         return true;
     }
 
-    public List<Commodity> getCommodities() {
-        return database.getCommodities();
+    public List<Commodity> getCommodities(QueryModel query) {
+        var commodities = database.getCommodities();
+        return applyQuery(commodities, query);
     }
 
     public Commodity findCommodity(int commodityId) {
@@ -32,30 +37,44 @@ public class CommodityRepository {
         return null;
     }
 
-    public List<Commodity> getCommoditiesByCategory(String category){
-        var commoditiesListByCategory = new ArrayList<Commodity>();
-        for (Commodity c : database.getCommodities()) {
-            if (c.isInList(category))
-                commoditiesListByCategory.add(c);
-        }
-        return commoditiesListByCategory;
+//    public List<Commodity> getCommoditiesByPrice(int startPrice, int endPrice, int page, int limit){
+//        var commoditiesListByPrice = new ArrayList<Commodity>();
+//        for (Commodity c : database.getCommodities()) {
+//            if (c.getPrice() >= startPrice && c.getPrice() <= endPrice)
+//                commoditiesListByPrice.add(c);
+//        }
+//        return applyQuery(commoditiesListByPrice, page, limit);
+//    }
+
+    private List<Commodity> applyQuery(List<Commodity> commodities, QueryModel query) {
+        if (query == null)
+            return commodities;
+        var result = applySearch(commodities, query.search(), query.searchType());
+        applySort(result, query.sort());
+        result = applyPagination(result, query.page(), query.limit());
+        return result;
     }
 
-    public List<Commodity> getCommoditiesByPrice(int startPrice, int endPrice){
-        var commoditiesListByCategory = new ArrayList<Commodity>();
-        for (Commodity c : database.getCommodities()) {
-            if (c.getPrice() >= startPrice && c.getPrice() <= endPrice)
-                commoditiesListByCategory.add(c);
+    private List<Commodity> applySearch(List<Commodity> commodities, String search, String searchType) {
+        if (search != null) {
+            if (Objects.equals(searchType, "category"))
+                return commodities.stream().filter(c -> c.isInList(search)).collect(Collectors.toList());
+            else if (Objects.equals(searchType, "name"))
+                return commodities.stream().filter(c -> c.getName().contains(search)).collect(Collectors.toList());
         }
-        return commoditiesListByCategory;
+        return commodities;
     }
 
-    public List<Commodity> getCommoditiesByName(String name) {
-        var commoditiesListByName = new ArrayList<Commodity>();
-        for (Commodity c : database.getCommodities()) {
-            if (c.getName().contains(name))
-                commoditiesListByName.add(c);
+    private void applySort(List<Commodity> commodities, String sort) {
+        if (Objects.equals(sort, "rate")) {
+            Comparator<Commodity> byRating = Comparator.comparingDouble(Commodity::getRating);
+            commodities.sort(byRating);
         }
-        return commoditiesListByName;
+    }
+
+    private List<Commodity> applyPagination(List<Commodity> commodities, Integer page, Integer limit) {
+        if (page == null || limit == null || page == 0)
+            return commodities;
+        return commodities.stream().skip((long) (page - 1) * limit).limit(limit).collect(Collectors.toList());
     }
 }
