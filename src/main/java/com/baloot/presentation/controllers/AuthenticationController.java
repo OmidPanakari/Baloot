@@ -6,14 +6,17 @@ import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
 import com.baloot.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
     @PostMapping("/login")
-    public Response Login(@RequestBody LoginModel model, HttpServletRequest request) {
+    public Response login(@RequestBody LoginModel model, HttpServletRequest request) {
         var service = Container.resolve(UserService.class);
         var response = service.login(model.username(), model.password());
         if (response.isSuccess()) {
@@ -24,11 +27,21 @@ public class AuthenticationController {
     }
 
     @GetMapping("/logout")
-    public Response Logout(HttpServletRequest request) {
+    public Response logout(HttpServletRequest request) {
         var session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
         return DataResponse.Successful();
+    }
+
+    @GetMapping("/")
+    public Response isLoggedIn(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        var service = Container.resolve(UserService.class);
+        var session = request.getSession(false);
+        if (session == null)
+            return DataResponse.Successful(false);
+        var username = (String) session.getAttribute("username");
+        return DataResponse.Successful(username != null);
     }
 }
