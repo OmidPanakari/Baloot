@@ -54,9 +54,6 @@ public class Database {
             type = new TypeToken<List<Commodity>>() {
             }.getType();
             commodities.addAll(gson.fromJson(commoditiesJson, type));
-            var discountsJson = getUrl("http://5.253.25.110:5000/api/discount");
-            type = new TypeToken<List<Discount>>() {}.getType();
-            discounts.addAll(gson.fromJson(discountsJson, type));
             comments = comments.stream().map(Comment::new).collect(Collectors.toList());
             comments.forEach(c -> c.setUsername(users.stream()
                     .filter(u -> Objects.equals(u.getEmail(), c.getUserEmail()))
