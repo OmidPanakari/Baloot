@@ -53,10 +53,8 @@ public class CommodityRepository {
         var result = commodities;
         result = applyAvailableFilter(result, query.available());
         result = applySearch(result, query.search(), query.searchType());
-        int pageCount = result.size();
         applySort(result, query.sort());
-        result = applyPagination(result, query.page(), query.limit());
-        return new CommodityListModel(result, pageCount);
+        return applyPagination(result, query.page(), query.limit());
     }
 
     private List<Commodity> applySearch(List<Commodity> commodities, String search, String searchType) {
@@ -80,10 +78,17 @@ public class CommodityRepository {
         }
     }
 
-    private List<Commodity> applyPagination(List<Commodity> commodities, Integer page, Integer limit) {
-        if (page == null || limit == null || page == 0)
-            return commodities;
-        return commodities.stream().skip((long) (page - 1) * limit).limit(limit).collect(Collectors.toList());
+    private CommodityListModel applyPagination(List<Commodity> commodities, Integer page, Integer limit) {
+        if (limit == null || limit == 0)
+            return new CommodityListModel(commodities, 1);
+        if (page == null || page == 0)
+            return new CommodityListModel(commodities.stream()
+                    .limit(limit).collect(Collectors.toList()),
+                    (commodities.size() + limit - 1) / limit);
+        return new CommodityListModel(commodities.stream()
+                .skip((long) (page - 1) * limit)
+                .limit(limit).collect(Collectors.toList()),
+                (commodities.size() + limit - 1) / limit);
     }
 
     private List<Commodity> applyAvailableFilter(List<Commodity> commodities, Boolean available) {

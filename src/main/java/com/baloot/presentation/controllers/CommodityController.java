@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/commodities")
 public class CommodityController {
     @GetMapping
-    public Response getCommodities(@ModelAttribute QueryModel query, HttpSession session) {
+    public Response getCommodities(@ModelAttribute QueryModel query) {
         var service = Container.resolve(CommodityService.class);
         return service.getCommodities(query);
     }

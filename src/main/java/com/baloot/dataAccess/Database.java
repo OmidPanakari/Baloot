@@ -50,7 +50,7 @@ public class Database {
             type = new TypeToken<List<Comment>>() {
             }.getType();
             comments.addAll(gson.fromJson(commentsJson, type));
-            var commoditiesJson = getUrl("http://5.253.25.110:5000/api/commodities");
+            var commoditiesJson = getUrl("http://5.253.25.110:5000/api/v2/commodities");
             type = new TypeToken<List<Commodity>>() {
             }.getType();
             commodities.addAll(gson.fromJson(commoditiesJson, type));

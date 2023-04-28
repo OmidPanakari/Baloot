@@ -17,6 +17,8 @@ public class Commodity {
     @Getter
     private List<String> categories;
     @Getter
+    private String image;
+    @Getter
     private double rating;
     @Getter @Setter
     private int inStock;

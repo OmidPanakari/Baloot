@@ -13,7 +13,6 @@ import com.baloot.responses.Response;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CommodityService {
     private final ProviderRepository providerRepository;
