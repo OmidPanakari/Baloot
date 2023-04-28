@@ -13,6 +13,7 @@ import com.baloot.responses.Response;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CommodityService {
     private final ProviderRepository providerRepository;
@@ -80,7 +81,7 @@ public class CommodityService {
         if (commodity == null) {
             return DataResponse.Failed("Commodity not found!");
         }
-        var commodities = commodityRepository.getCommodities(null);
+        var commodities = commodityRepository.getCommodities(null).commodities();
         var suggestions = new ArrayList<Commodity>();
         commodities.sort((a, b) -> (int) Math.signum(calculateScore(commodity, b) - calculateScore(commodity, a)));
         for (Commodity c : commodities) {

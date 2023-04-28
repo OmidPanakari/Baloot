@@ -2,6 +2,7 @@ package com.baloot.dataAccess.repositories;
 
 import com.baloot.core.entities.Commodity;
 import com.baloot.dataAccess.Database;
+import com.baloot.dataAccess.models.CommodityListModel;
 import com.baloot.dataAccess.utils.QueryModel;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class CommodityRepository {
         return true;
     }
 
-    public List<Commodity> getCommodities(QueryModel query) {
+    public CommodityListModel getCommodities(QueryModel query) {
         var commodities = database.getCommodities();
         return applyQuery(commodities, query);
     }
@@ -46,15 +47,16 @@ public class CommodityRepository {
 //        return applyQuery(commoditiesListByPrice, page, limit);
 //    }
 
-    private List<Commodity> applyQuery(List<Commodity> commodities, QueryModel query) {
+    private CommodityListModel applyQuery(List<Commodity> commodities, QueryModel query) {
         if (query == null)
-            return commodities;
+            return new CommodityListModel(commodities, 1);
         var result = commodities;
         result = applyAvailableFilter(result, query.available());
         result = applySearch(result, query.search(), query.searchType());
+        int pageCount = result.size();
         applySort(result, query.sort());
         result = applyPagination(result, query.page(), query.limit());
-        return result;
+        return new CommodityListModel(result, pageCount);
     }
 
     private List<Commodity> applySearch(List<Commodity> commodities, String search, String searchType) {
