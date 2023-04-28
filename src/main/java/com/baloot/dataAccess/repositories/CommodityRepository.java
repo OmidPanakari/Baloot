@@ -49,7 +49,9 @@ public class CommodityRepository {
     private List<Commodity> applyQuery(List<Commodity> commodities, QueryModel query) {
         if (query == null)
             return commodities;
-        var result = applySearch(commodities, query.search(), query.searchType());
+        var result = commodities;
+        result = applyAvailableFilter(result, query.available());
+        result = applySearch(result, query.search(), query.searchType());
         applySort(result, query.sort());
         result = applyPagination(result, query.page(), query.limit());
         return result;
@@ -66,9 +68,13 @@ public class CommodityRepository {
     }
 
     private void applySort(List<Commodity> commodities, String sort) {
-        if (Objects.equals(sort, "rate")) {
-            Comparator<Commodity> byRating = Comparator.comparingDouble(Commodity::getRating);
-            commodities.sort(byRating);
+        if (Objects.equals(sort, "name")) {
+            Comparator<Commodity> byName = Comparator.comparing(Commodity::getName);
+            commodities.sort(byName);
+        }
+        else if (Objects.equals(sort, "price")) {
+            Comparator<Commodity> byPrice = Comparator.comparingInt(Commodity::getPrice);
+            commodities.sort(byPrice);
         }
     }
 
@@ -76,5 +82,11 @@ public class CommodityRepository {
         if (page == null || limit == null || page == 0)
             return commodities;
         return commodities.stream().skip((long) (page - 1) * limit).limit(limit).collect(Collectors.toList());
+    }
+
+    private List<Commodity> applyAvailableFilter(List<Commodity> commodities, Boolean available) {
+        if (available == null || !available)
+            return commodities;
+        return commodities.stream().filter(c -> c.getInStock() > 0).collect(Collectors.toList());
     }
 }
