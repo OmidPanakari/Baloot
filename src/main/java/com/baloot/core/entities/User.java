@@ -34,12 +34,12 @@ public class User {
     }
 
     public User(String password, String username, String email, String address, String birthDate, int credit){
-        password = password;
-        email = email;
-        address = address;
-        credit = credit;
-        username = username;
-        birthDate = birthDate;
+        this.password = password;
+        this.email = email;
+        this.address = address;
+        this.credit = credit;
+        this.username = username;
+        this.birthDate = birthDate;
         buyList = new ArrayList<>();
         purchased = new ArrayList<>();
     }
