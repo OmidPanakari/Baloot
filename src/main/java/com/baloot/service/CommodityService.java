@@ -3,6 +3,8 @@ package com.baloot.service;
 import com.baloot.core.entities.Comment;
 import com.baloot.core.entities.Commodity;
 import com.baloot.core.entities.CommodityRate;
+import com.baloot.core.entities.User;
+import com.baloot.dataAccess.models.CommodityList;
 import com.baloot.dataAccess.repositories.CommentRepository;
 import com.baloot.dataAccess.repositories.CommodityRepository;
 import com.baloot.dataAccess.repositories.ProviderRepository;
@@ -10,9 +12,12 @@ import com.baloot.dataAccess.repositories.UserRepository;
 import com.baloot.dataAccess.utils.QueryModel;
 import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
+import com.baloot.service.models.CommodityListModel;
+import com.baloot.service.models.CommodityModel;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class CommodityService {
     private final ProviderRepository providerRepository;
@@ -38,15 +43,21 @@ public class CommodityService {
         return DataResponse.Failed("Commodity already exists.");
     }
 
-    public Response getCommodityById(int commodityId) {
+    public Response getCommodityById(int commodityId, String username) {
+        var user = userRepository.findUser(username);
+        if (user == null)
+            return DataResponse.Failed("User not found!");
         Commodity commodityToFind = commodityRepository.findCommodity(commodityId);
         if (commodityToFind == null)
             return DataResponse.Failed("Commodity not found!");
-        return DataResponse.Successful(commodityToFind);
+        return DataResponse.Successful(convertToModel(commodityToFind, user));
     }
 
-    public Response getCommodities(QueryModel query) {
-        return DataResponse.Successful(this.commodityRepository.getCommodities(query));
+    public Response getCommodities(QueryModel query, String username) {
+        var user = userRepository.findUser(username);
+        if (user == null)
+            return DataResponse.Failed("User not found!");
+        return DataResponse.Successful(convertToModel(commodityRepository.getCommodities(query), user));
     }
 
     public Response getComments(int commodityId) {
@@ -104,5 +115,18 @@ public class CommodityService {
             }
         }
         return b.getRating() + (hasCommon ? 1:0) * 11;
+    }
+    private CommodityModel convertToModel(Commodity commodity, User user) {
+        var item = user.getBuyList().stream()
+                .filter(c -> c.getCommodity().getId() == commodity.getId())
+                .findFirst()
+                .orElse(null);
+        int inCart = (item == null) ? 0 : item.getCount();
+        return new CommodityModel(commodity, inCart);
+    }
+
+    private CommodityListModel convertToModel(CommodityList list, User user) {
+        var models = list.commodities().stream().map(c -> convertToModel(c, user)).collect(Collectors.toList());
+        return new CommodityListModel(models, list.pageCount());
     }
 }

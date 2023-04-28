@@ -18,16 +18,16 @@ public class User {
     private String address;
     @Getter @Setter
     private int credit;
-    private transient List<Commodity> buyList;
-    private transient List<Commodity> purchased;
+    private transient List<CommodityItem> buyList;
+    private transient List<CommodityItem> purchased;
 
-    public List<Commodity> getBuyList() {
+    public List<CommodityItem> getBuyList() {
         if (buyList == null)
             buyList = new ArrayList<>();
         return buyList;
     }
 
-    public List<Commodity> getPurchased() {
+    public List<CommodityItem> getPurchased() {
         if (purchased == null)
             purchased = new ArrayList<>();
         return purchased;
@@ -56,32 +56,49 @@ public class User {
     }
 
     public boolean addToBuyList(Commodity commodity){
-        var ind = getBuyList().indexOf(commodity);
-        if (ind != -1)
-            return false;
-        buyList.add(commodity);
+        var ind = getBuyList().indexOf(getBuyList().stream().filter(c -> c.getCommodity().getId() == commodity.getId())
+                .findFirst().orElse(null));
+        if (ind == -1) {
+            buyList.add(new CommodityItem(commodity, 1));
+            return true;
+        }
+        buyList.get(ind).setCount(buyList.get(ind).getCount() + 1);
         return true;
     }
 
     public boolean removeFromBuyList(Commodity commodity){
-        var ind = getBuyList().indexOf(commodity);
+        var ind = getBuyList().indexOf(getBuyList().stream().filter(c -> c.getCommodity().getId() == commodity.getId())
+                .findFirst().orElse(null));
         if (ind == -1)
             return false;
+        buyList.get(ind).setCount(buyList.get(ind).getCount() - 1);
         buyList.remove(ind);
         return true;
     }
 
     public boolean purchaseBuyList(Discount discount) {
-        var price = getBuyList().stream().mapToInt(Commodity::getPrice).sum();
+        var price = getBuyList().stream().mapToInt(c -> c.getCommodity().getPrice()).sum();
         if (discount != null) {
             price = price * (100 - discount.getDiscount()) / 100;
         }
         if (credit < price)
             return false;
         credit -= price;
-        getPurchased().addAll(buyList);
+        addToPurchaseList(buyList);
         buyList.clear();
         return true;
+    }
+
+    private void addToPurchaseList(List<CommodityItem> items) {
+        for (var item : items) {
+            var ind = getPurchased().indexOf(getPurchased().stream().filter(c ->
+                            c.getCommodity().getId() == item.getCommodity().getId())
+                    .findFirst().orElse(null));
+            if (ind == -1)
+                getPurchased().add(item);
+            else
+                getPurchased().get(ind).setCount(getPurchased().get(ind).getCount() + item.getCount());
+        }
     }
 
 }

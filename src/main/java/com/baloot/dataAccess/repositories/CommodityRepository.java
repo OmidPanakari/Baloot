@@ -2,10 +2,9 @@ package com.baloot.dataAccess.repositories;
 
 import com.baloot.core.entities.Commodity;
 import com.baloot.dataAccess.Database;
-import com.baloot.dataAccess.models.CommodityListModel;
+import com.baloot.dataAccess.models.CommodityList;
 import com.baloot.dataAccess.utils.QueryModel;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -26,7 +25,7 @@ public class CommodityRepository {
         return true;
     }
 
-    public CommodityListModel getCommodities(QueryModel query) {
+    public CommodityList getCommodities(QueryModel query) {
         var commodities = database.getCommodities();
         return applyQuery(commodities, query);
     }
@@ -47,9 +46,9 @@ public class CommodityRepository {
 //        return applyQuery(commoditiesListByPrice, page, limit);
 //    }
 
-    private CommodityListModel applyQuery(List<Commodity> commodities, QueryModel query) {
+    private CommodityList applyQuery(List<Commodity> commodities, QueryModel query) {
         if (query == null)
-            return new CommodityListModel(commodities, 1);
+            return new CommodityList(commodities, 1);
         var result = commodities;
         result = applyAvailableFilter(result, query.available());
         result = applySearch(result, query.search(), query.searchType());
@@ -78,14 +77,14 @@ public class CommodityRepository {
         }
     }
 
-    private CommodityListModel applyPagination(List<Commodity> commodities, Integer page, Integer limit) {
+    private CommodityList applyPagination(List<Commodity> commodities, Integer page, Integer limit) {
         if (limit == null || limit == 0)
-            return new CommodityListModel(commodities, 1);
+            return new CommodityList(commodities, 1);
         if (page == null || page == 0)
-            return new CommodityListModel(commodities.stream()
+            return new CommodityList(commodities.stream()
                     .limit(limit).collect(Collectors.toList()),
                     (commodities.size() + limit - 1) / limit);
-        return new CommodityListModel(commodities.stream()
+        return new CommodityList(commodities.stream()
                 .skip((long) (page - 1) * limit)
                 .limit(limit).collect(Collectors.toList()),
                 (commodities.size() + limit - 1) / limit);

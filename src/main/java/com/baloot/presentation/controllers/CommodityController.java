@@ -16,15 +16,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/commodities")
 public class CommodityController {
     @GetMapping
-    public Response getCommodities(@ModelAttribute QueryModel query) {
+    public Response getCommodities(@ModelAttribute QueryModel query, HttpServletRequest request) {
         var service = Container.resolve(CommodityService.class);
-        return service.getCommodities(query);
+        var session = request.getSession(false);
+        var username = (String) session.getAttribute("username");
+        return service.getCommodities(query, username);
     }
 
     @GetMapping("/{id}")
-    public Response getCommodity(@PathVariable int id) {
+    public Response getCommodity(@PathVariable int id, HttpServletRequest request) {
         var service = Container.resolve(CommodityService.class);
-        return service.getCommodityById(id);
+        var session = request.getSession(false);
+        var username = (String) session.getAttribute("username");
+        return service.getCommodityById(id, username);
     }
 
     @GetMapping("/{id}/suggestions")
