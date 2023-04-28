@@ -4,7 +4,6 @@ import com.baloot.core.entities.Comment;
 import com.baloot.core.entities.User;
 import com.baloot.dataAccess.repositories.DiscountRepository;
 import com.baloot.service.models.UserCommodityModel;
-import com.baloot.service.models.UsernameModel;
 import com.baloot.dataAccess.repositories.CommentRepository;
 import com.baloot.dataAccess.repositories.CommodityRepository;
 import com.baloot.dataAccess.repositories.UserRepository;
@@ -65,8 +64,8 @@ public class UserService {
         return DataResponse.Failed("Commodity does not exist in the buy list.");
     }
 
-    public Response getBuyList(UsernameModel usernameModel) {
-        User userToGetBuyList = userRepository.findUser(usernameModel.getUsername());
+    public Response getBuyList(String username) {
+        User userToGetBuyList = userRepository.findUser(username);
         if (userToGetBuyList == null)
             return DataResponse.Failed("User not found!");
         return DataResponse.Successful(userToGetBuyList.getBuyList());

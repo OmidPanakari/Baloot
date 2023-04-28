@@ -2,7 +2,6 @@ import com.baloot.core.entities.Commodity;
 import com.baloot.core.entities.Provider;
 import com.baloot.core.entities.User;
 import com.baloot.dataAccess.repositories.DiscountRepository;
-import com.baloot.service.models.UsernameModel;
 import com.baloot.dataAccess.repositories.CommentRepository;
 import com.baloot.dataAccess.repositories.CommodityRepository;
 import com.baloot.dataAccess.repositories.UserRepository;
@@ -68,7 +67,7 @@ public class UserServiceTest {
         when(userRepositoryMock.findUser(user.getUsername()))
                 .thenReturn(user);
         // Action
-        var response = userService.getBuyList(new UsernameModel(user.getUsername()));
+        var response = userService.getBuyList(user.getUsername());
         // Assert
         Assertions.assertTrue(response.isSuccess());
         var data = ((DataResponse<List<Commodity>>)response).getData();
@@ -83,7 +82,7 @@ public class UserServiceTest {
         when(userRepositoryMock.findUser(user.getUsername()))
                 .thenReturn(null);
         // Action
-        var response = userService.getBuyList(new UsernameModel(user.getUsername()));
+        var response = userService.getBuyList(user.getUsername());
         // Assert
         Assertions.assertFalse(response.isSuccess());
         var data = ((DataResponse<String>)response).getData();
