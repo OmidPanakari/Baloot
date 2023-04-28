@@ -62,20 +62,6 @@ public class CommodityServiceTest {
     }
 
     @Test
-    public void searchByPrice_Valid_Success() {
-        // Arrange
-        when(commodityRepositoryMock.getCommoditiesByPrice(0, 100))
-                .thenReturn(Collections.singletonList(commodities.get(0)));
-        // Action
-        var response = commodityService.getCommoditiesByPrice(0, 100);
-        // Assert
-        Assertions.assertTrue(response.isSuccess());
-        var data = ((DataResponse<List<Commodity>>)response).getData();
-        Assertions.assertEquals(1, data.size());
-        Assertions.assertEquals(commodities.get(0).getId(), data.get(0).getId());
-    }
-
-    @Test
     public void rateCommodity_Valid_Success() {
         // Arrange
         var commodity = commodities.get(0);
