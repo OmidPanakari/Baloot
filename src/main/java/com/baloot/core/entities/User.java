@@ -33,6 +33,17 @@ public class User {
         return purchased;
     }
 
+    public User(String password, String username, String email, String address, String birthDate, int credit){
+        password = password;
+        email = email;
+        address = address;
+        credit = credit;
+        username = username;
+        birthDate = birthDate;
+        buyList = new ArrayList<>();
+        purchased = new ArrayList<>();
+    }
+
     public User(User user){
         password = user.password;
         email = user.email;

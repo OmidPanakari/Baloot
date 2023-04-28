@@ -1,7 +1,9 @@
 package com.baloot.presentation.controllers;
 
+import com.baloot.core.entities.User;
 import com.baloot.presentation.models.AddCreditModel;
 import com.baloot.presentation.models.UpdateCartModel;
+import com.baloot.presentation.models.signupModel;
 import com.baloot.presentation.utils.Container;
 import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
@@ -44,5 +46,14 @@ public class UserController {
             return service.removeFromBuyList(new UserCommodityModel(username, model.commodityId()));
         }
         return DataResponse.Failed("Invalid action for request!");
+    }
+
+    @PostMapping("/")
+    public Response signup(@RequestBody signupModel model, HttpServletRequest request) {
+        var service = Container.resolve(UserService.class);
+        if (!Objects.equals(model.password(), model.confirmPassword()))
+            return DataResponse.Failed("Passwords are not the same!");
+        return service.addUser(new User(model.password(), model.username(), model.email(), model.address(),
+                model.birthDate(), 0));
     }
 }
