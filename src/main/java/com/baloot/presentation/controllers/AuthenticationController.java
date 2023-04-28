@@ -6,20 +6,18 @@ import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
 import com.baloot.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+@RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
     @PostMapping("/login")
     public Response Login(@RequestBody LoginModel model, HttpServletRequest request) {
         var service = Container.resolve(UserService.class);
-        var response = service.login(model.getUsername(), model.getPassword());
+        var response = service.login(model.username(), model.password());
         if (response.isSuccess()) {
             var session = request.getSession(true);
-            session.setAttribute("username", model.getUsername());
+            session.setAttribute("username", model.username());
         }
         return response;
     }
