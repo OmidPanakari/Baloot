@@ -21,24 +21,21 @@ public class UserController {
     @PutMapping("/credit")
     public Response AddCredit(@RequestBody AddCreditModel creditModel, HttpServletRequest request) {
         var service = Container.resolve(UserService.class);
-        var session = request.getSession(false);
-        var username = (String) session.getAttribute("username");
+        var username = (String) request.getServletContext().getAttribute("username");
         return service.addCredit(username, creditModel.credit());
     }
 
     @GetMapping("/cart")
     public Response GetBuyList(HttpServletRequest request) {
         var service = Container.resolve(UserService.class);
-        var session = request.getSession(false);
-        var username = (String) session.getAttribute("username");
+        var username = (String) request.getServletContext().getAttribute("username");
         return service.getBuyList(username);
     }
 
     @PutMapping("/cart")
     public Response UpdateBuyList(@RequestBody UpdateCartModel model, HttpServletRequest request) {
         var service = Container.resolve(UserService.class);
-        var session = request.getSession(false);
-        var username = (String) session.getAttribute("username");
+        var username = (String) request.getServletContext().getAttribute("username");
         if (Objects.equals(model.action(), "add")) {
             return service.addToBuyList(new UserCommodityModel(username, model.commodityId()));
         }

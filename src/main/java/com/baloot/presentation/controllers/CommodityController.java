@@ -18,16 +18,14 @@ public class CommodityController {
     @GetMapping
     public Response getCommodities(@ModelAttribute QueryModel query, HttpServletRequest request) {
         var service = Container.resolve(CommodityService.class);
-        var session = request.getSession(false);
-        var username = (String) session.getAttribute("username");
+        var username = (String) request.getServletContext().getAttribute("username");
         return service.getCommodities(query, username);
     }
 
     @GetMapping("/{id}")
     public Response getCommodity(@PathVariable int id, HttpServletRequest request) {
         var service = Container.resolve(CommodityService.class);
-        var session = request.getSession(false);
-        var username = (String) session.getAttribute("username");
+        var username = (String) request.getServletContext().getAttribute("username");
         return service.getCommodityById(id, username);
     }
 
@@ -47,8 +45,7 @@ public class CommodityController {
     @PostMapping("/{id}/comments")
     public Response addComment(@PathVariable int id, @RequestBody AddCommentModel commentModel, HttpServletRequest request) {
         var service = Container.resolve(CommodityService.class);
-        var session = request.getSession(false);
-        var username = (String) session.getAttribute("username");
+        var username = (String) request.getServletContext().getAttribute("username");
         return service.addComment(commentModel.text(), username, id);
     }
 
@@ -57,8 +54,7 @@ public class CommodityController {
     @PostMapping("/{id}/ratings")
     public Response addRating(@PathVariable int id, @RequestBody AddRatingModel ratingModel, HttpServletRequest request) {
         var service = Container.resolve(CommodityService.class);
-        var session = request.getSession(false);
-        var username = (String) session.getAttribute("username");
+        var username = (String) request.getServletContext().getAttribute("username");
         return service.rateCommodity(new CommodityRate(username, id, ratingModel.rate()));
     }
 }

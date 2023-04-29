@@ -18,6 +18,6 @@ public class DataResponse<T> extends Response {
         return new DataResponse<>(false, message, null);
     }
     public static DataResponse<Object> Successful() {
-        return new DataResponse<>(false, "", null);
+        return new DataResponse<>(true, "", null);
     }
 }

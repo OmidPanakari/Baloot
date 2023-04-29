@@ -2,6 +2,7 @@ package com.baloot.presentation.controllers;
 
 import com.baloot.presentation.models.LoginModel;
 import com.baloot.presentation.utils.Container;
+import com.baloot.presentation.utils.TokenManager;
 import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
 import com.baloot.service.UserService;
@@ -20,8 +21,8 @@ public class AuthenticationController {
         var service = Container.resolve(UserService.class);
         var response = service.login(model.username(), model.password());
         if (response.isSuccess()) {
-            var session = request.getSession(true);
-            session.setAttribute("username", model.username());
+            var token = TokenManager.generateToken(model.username());
+            return DataResponse.Successful(token);
         }
         return response;
     }
