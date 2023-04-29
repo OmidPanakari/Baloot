@@ -39,10 +39,7 @@ public class AuthenticationController {
     @GetMapping("/")
     public Response isLoggedIn(HttpServletRequest request, HttpServletResponse response) throws IOException {
         var service = Container.resolve(UserService.class);
-        var session = request.getSession(false);
-        if (session == null)
-            return DataResponse.Successful(false);
-        var username = (String) session.getAttribute("username");
-        return DataResponse.Successful(username != null);
+        var username = (String) request.getServletContext().getAttribute("username");
+        return DataResponse.Successful(service.getUser(username));
     }
 }
