@@ -5,7 +5,7 @@ import com.baloot.responses.Response;
 import com.baloot.service.ProviderService;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = {"Authorization"})
 @RestController
 @RequestMapping("/providers")
 public class ProviderController {
