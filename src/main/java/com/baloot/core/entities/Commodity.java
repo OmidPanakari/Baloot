@@ -20,6 +20,8 @@ public class Commodity {
     private String image;
     @Getter
     private double rating;
+    @Getter
+    private int rateCount;
     @Getter @Setter
     private int inStock;
     @Getter
@@ -46,6 +48,7 @@ public class Commodity {
         name = commodity.name;
         price = commodity.price;
         rating = 0;
+        rateCount = 0;
         inStock = commodity.inStock;
         providerId = commodity.providerId;
         categories = new ArrayList<>(commodity.categories);
@@ -76,6 +79,7 @@ public class Commodity {
             }
         }
         ratings.add(commodityRate);
+        rateCount++;
     }
     public void addComment(Comment comment){
         if (comments == null)

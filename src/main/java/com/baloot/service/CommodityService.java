@@ -17,6 +17,7 @@ import com.baloot.service.models.CommodityModel;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommodityService {
@@ -86,7 +87,10 @@ public class CommodityService {
         return DataResponse.Successful();
     }
 
-    public Response getSuggestions(int commodityId) {
+    public Response getSuggestions(int commodityId, String username) {
+        var user = userRepository.findUser(username);
+        if (user == null)
+            return DataResponse.Failed("User not found!");
         var commodity = commodityRepository.findCommodity(commodityId);
         if (commodity == null) {
             return DataResponse.Failed("Commodity not found!");
@@ -103,7 +107,7 @@ public class CommodityService {
             }
             suggestions.add(c);
         }
-        return DataResponse.Successful(suggestions);
+        return DataResponse.Successful(convertToModel(suggestions, user));
     }
 
     private double calculateScore(Commodity a, Commodity b) {
@@ -123,6 +127,10 @@ public class CommodityService {
                 .orElse(null);
         int inCart = (item == null) ? 0 : item.getCount();
         return new CommodityModel(commodity, inCart);
+    }
+
+    private List<CommodityModel> convertToModel(List<Commodity> list, User user) {
+        return list.stream().map(c -> convertToModel(c, user)).collect(Collectors.toList());
     }
 
     private CommodityListModel convertToModel(CommodityList list, User user) {

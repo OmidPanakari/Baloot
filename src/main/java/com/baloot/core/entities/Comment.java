@@ -21,7 +21,7 @@ public class Comment {
     @Getter
     private int dislikes;
     @Getter @Setter
-    private transient String username;
+    private String username;
 
     public Comment(String username, String userEmail, int commodityId, String text, String date) {
         this.username = username;

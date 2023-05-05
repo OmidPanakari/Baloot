@@ -30,9 +30,10 @@ public class CommodityController {
     }
 
     @GetMapping("/{id}/suggestions")
-    public Response getCommoditySuggestions(@PathVariable int id) {
+    public Response getCommoditySuggestions(@PathVariable int id, HttpServletRequest request) {
         var service = Container.resolve(CommodityService.class);
-        return service.getSuggestions(id);
+        var username = (String) request.getServletContext().getAttribute("username");
+        return service.getSuggestions(id, username);
     }
 
     @GetMapping("/{id}/comments")
