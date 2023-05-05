@@ -45,7 +45,12 @@ public class TokenManager {
     }
 
     public static boolean isTokenValid(String token) {
-        return (token != null && extractExpirationDate(token).after(new Date(System.currentTimeMillis())));
+        try {
+            return (token != null && extractExpirationDate(token).after(new Date(System.currentTimeMillis())));
+        }
+        catch (Exception ex) {
+            return false;
+        }
     }
 
     private static Claims extractAllClaims(String token) {
