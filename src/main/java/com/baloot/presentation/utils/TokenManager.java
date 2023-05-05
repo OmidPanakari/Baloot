@@ -45,7 +45,6 @@ public class TokenManager {
     }
 
     public static boolean isTokenValid(String token) {
-        Date a = extractExpirationDate(token);
         return (token != null && extractExpirationDate(token).after(new Date(System.currentTimeMillis())));
     }
 
