@@ -125,7 +125,7 @@ public class CommodityService {
                 .filter(c -> c.getCommodity().getId() == commodity.getId())
                 .findFirst()
                 .orElse(null);
-        int inCart = (item == null) ? 0 : item.getCount();
+        int inCart = (item == null) ? 0 : item.getInCart();
         return new CommodityModel(commodity, inCart);
     }
 

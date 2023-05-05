@@ -62,7 +62,7 @@ public class User {
             buyList.add(new CommodityItem(commodity, 1));
             return true;
         }
-        buyList.get(ind).setCount(buyList.get(ind).getCount() + 1);
+        buyList.get(ind).setInCart(buyList.get(ind).getInCart() + 1);
         return true;
     }
 
@@ -71,8 +71,8 @@ public class User {
                 .findFirst().orElse(null));
         if (ind == -1)
             return false;
-        buyList.get(ind).setCount(buyList.get(ind).getCount() - 1);
-        if (buyList.get(ind).getCount() == 0) {
+        buyList.get(ind).setInCart(buyList.get(ind).getInCart() - 1);
+        if (buyList.get(ind).getInCart() == 0) {
             buyList.remove(ind);
         }
         return true;
@@ -99,7 +99,7 @@ public class User {
             if (ind == -1)
                 getPurchased().add(item);
             else
-                getPurchased().get(ind).setCount(getPurchased().get(ind).getCount() + item.getCount());
+                getPurchased().get(ind).setInCart(getPurchased().get(ind).getInCart() + item.getInCart());
         }
     }
 

@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class CommodityItem {
-    public CommodityItem(Commodity commodity, int count) {
-        this.count = count;
+    public CommodityItem(Commodity commodity, int inCart) {
+        this.inCart = inCart;
         this.commodity = commodity;
     }
     @Getter @Setter
-    private int count;
+    private int inCart;
     @Getter
     private Commodity commodity;
 }
