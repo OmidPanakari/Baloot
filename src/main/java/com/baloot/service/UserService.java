@@ -45,7 +45,7 @@ public class UserService {
             return DataResponse.Failed("Not enough stock!");
         if (userToAdd.addToBuyList(commodity)) {
             commodity.setInStock(commodity.getInStock() - 1);
-            return DataResponse.Successful();
+            return DataResponse.Successful(commodity.getInStock());
         }
         return DataResponse.Failed("Commodity already exists in the buy list!");
     }
@@ -59,7 +59,7 @@ public class UserService {
             return DataResponse.Failed("User not found!");
         if (userToAdd.removeFromBuyList(commodity)) {
             commodity.setInStock(commodity.getInStock() + 1);
-            return DataResponse.Successful();
+            return DataResponse.Successful(commodity.getInStock());
         }
         return DataResponse.Failed("Commodity does not exist in the buy list.");
     }
