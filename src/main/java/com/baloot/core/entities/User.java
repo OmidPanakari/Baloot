@@ -72,7 +72,9 @@ public class User {
         if (ind == -1)
             return false;
         buyList.get(ind).setCount(buyList.get(ind).getCount() - 1);
-        buyList.remove(ind);
+        if (buyList.get(ind).getCount() == 0) {
+            buyList.remove(ind);
+        }
         return true;
     }
 
