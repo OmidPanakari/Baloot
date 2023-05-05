@@ -93,7 +93,7 @@ public class UserService {
         Comment comment = commentRepository.getComment(commentId);
         if (comment == null)
             return DataResponse.Failed("Comment not found!");
-        comment.voteComment(vote);
+        comment.voteComment(username, vote);
         return DataResponse.Successful(comment.getCommodityId());
     }
 

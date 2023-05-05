@@ -3,6 +3,7 @@ package com.baloot.presentation.controllers;
 import com.baloot.core.entities.User;
 import com.baloot.presentation.models.AddCreditModel;
 import com.baloot.presentation.models.UpdateCartModel;
+import com.baloot.presentation.models.VoteModel;
 import com.baloot.presentation.models.signupModel;
 import com.baloot.presentation.utils.Container;
 import com.baloot.responses.DataResponse;
@@ -43,6 +44,13 @@ public class UserController {
             return service.removeFromBuyList(new UserCommodityModel(username, model.commodityId()));
         }
         return DataResponse.Failed("Invalid action for request!");
+    }
+
+    @PostMapping("/votes")
+    public Response voteCommodity(@RequestBody VoteModel model, HttpServletRequest request) {
+        var service = Container.resolve(UserService.class);
+        var username = (String) request.getServletContext().getAttribute("username");
+        return service.voteComment(username, model.commentId(), model.vote());
     }
 
     @PostMapping("/")
