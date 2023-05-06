@@ -30,8 +30,10 @@ public class UserController {
     public Response GetBuyList(HttpServletRequest request) {
         var service = Container.resolve(UserService.class);
         var username = (String) request.getServletContext().getAttribute("username");
-        return service.getBuyList(username);
+        return service.getCart(username);
     }
+
+
 
     @PutMapping("/cart")
     public Response UpdateBuyList(@RequestBody UpdateCartModel model, HttpServletRequest request) {

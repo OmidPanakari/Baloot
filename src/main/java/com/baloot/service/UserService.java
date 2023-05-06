@@ -3,6 +3,7 @@ package com.baloot.service;
 import com.baloot.core.entities.Comment;
 import com.baloot.core.entities.User;
 import com.baloot.dataAccess.repositories.DiscountRepository;
+import com.baloot.presentation.models.CartModel;
 import com.baloot.service.models.UserCommodityModel;
 import com.baloot.dataAccess.repositories.CommentRepository;
 import com.baloot.dataAccess.repositories.CommodityRepository;
@@ -64,11 +65,11 @@ public class UserService {
         return DataResponse.Failed("Commodity does not exist in the buy list.");
     }
 
-    public Response getBuyList(String username) {
-        User userToGetBuyList = userRepository.findUser(username);
-        if (userToGetBuyList == null)
+    public Response getCart(String username) {
+        User user = userRepository.findUser(username);
+        if (user == null)
             return DataResponse.Failed("User not found!");
-        return DataResponse.Successful(userToGetBuyList.getBuyList());
+        return DataResponse.Successful(new CartModel(user.getBuyList(), user.getPurchased()));
     }
 
     public Response getUser(String username) {

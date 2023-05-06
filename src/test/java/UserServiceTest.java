@@ -67,7 +67,7 @@ public class UserServiceTest {
         when(userRepositoryMock.findUser(user.getUsername()))
                 .thenReturn(user);
         // Action
-        var response = userService.getBuyList(user.getUsername());
+        var response = userService.getCart(user.getUsername());
         // Assert
         Assertions.assertTrue(response.isSuccess());
         var data = ((DataResponse<List<Commodity>>)response).getData();
@@ -82,7 +82,7 @@ public class UserServiceTest {
         when(userRepositoryMock.findUser(user.getUsername()))
                 .thenReturn(null);
         // Action
-        var response = userService.getBuyList(user.getUsername());
+        var response = userService.getCart(user.getUsername());
         // Assert
         Assertions.assertFalse(response.isSuccess());
         var data = ((DataResponse<String>)response).getData();
