@@ -95,7 +95,7 @@ public class UserService {
         if (comment == null)
             return DataResponse.Failed("Comment not found!");
         comment.voteComment(username, vote);
-        return DataResponse.Successful(comment.getCommodityId());
+        return DataResponse.Successful(comment);
     }
 
     public Response purchaseBuyList(String username, String discountCode) {
