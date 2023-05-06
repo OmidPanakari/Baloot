@@ -10,6 +10,7 @@ import com.baloot.dataAccess.repositories.CommodityRepository;
 import com.baloot.dataAccess.repositories.ProviderRepository;
 import com.baloot.dataAccess.repositories.UserRepository;
 import com.baloot.dataAccess.utils.QueryModel;
+import com.baloot.presentation.models.RateModel;
 import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
 import com.baloot.service.models.CommodityListModel;
@@ -75,7 +76,7 @@ public class CommodityService {
         if (userRepository.findUser(commodityRate.getUsername()) == null)
             return DataResponse.Failed("User not found!");
         commodityToRate.addRating(commodityRate);
-        return DataResponse.Successful();
+        return DataResponse.Successful(new RateModel(commodityToRate.getRating(), commodityToRate.getRateCount()));
     }
 
     public Response addComment(String text, String username, int commodityId) {
