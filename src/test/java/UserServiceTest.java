@@ -5,6 +5,7 @@ import com.baloot.dataAccess.repositories.DiscountRepository;
 import com.baloot.dataAccess.repositories.CommentRepository;
 import com.baloot.dataAccess.repositories.CommodityRepository;
 import com.baloot.dataAccess.repositories.UserRepository;
+import com.baloot.presentation.models.CartModel;
 import com.baloot.responses.DataResponse;
 import com.baloot.service.UserService;
 import com.google.gson.Gson;
@@ -70,9 +71,10 @@ public class UserServiceTest {
         var response = userService.getCart(user.getUsername());
         // Assert
         Assertions.assertTrue(response.isSuccess());
-        var data = ((DataResponse<List<Commodity>>)response).getData();
-        Assertions.assertEquals(1, data.size());
-        Assertions.assertEquals(commodities.get(0).getId(), data.get(0).getId());
+        var data = ((DataResponse<CartModel>)response).getData();
+        Assertions.assertEquals(1, data.buyList().size());
+        Assertions.assertEquals(0, data.purchasedList().size());
+        Assertions.assertEquals(commodities.get(0).getId(), data.buyList().get(0).getCommodity().getId());
     }
 
     @Test
@@ -85,7 +87,6 @@ public class UserServiceTest {
         var response = userService.getCart(user.getUsername());
         // Assert
         Assertions.assertFalse(response.isSuccess());
-        var data = ((DataResponse<String>)response).getData();
-        Assertions.assertEquals("User not found!", data);
+        Assertions.assertEquals("User not found!", response.getMessage());
     }
 }

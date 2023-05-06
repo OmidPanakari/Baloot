@@ -6,6 +6,7 @@ import com.baloot.dataAccess.repositories.CommentRepository;
 import com.baloot.dataAccess.repositories.CommodityRepository;
 import com.baloot.dataAccess.repositories.ProviderRepository;
 import com.baloot.dataAccess.repositories.UserRepository;
+import com.baloot.presentation.models.RateModel;
 import com.baloot.responses.DataResponse;
 import com.baloot.service.CommodityService;
 import com.google.gson.Gson;
@@ -74,8 +75,9 @@ public class CommodityServiceTest {
         var response = commodityService.rateCommodity(new CommodityRate(user.getUsername(), commodity.getId(), 8));
         // Assert
         Assertions.assertTrue(response.isSuccess());
-        var data = ((DataResponse<String>)response).getData();
-        Assertions.assertEquals("Rate added.", data);
+        var data = ((DataResponse<RateModel>)response).getData();
+        Assertions.assertEquals(8, data.rating());
+        Assertions.assertEquals(1, data.rateCount());
     }
 
     @Test
@@ -89,8 +91,7 @@ public class CommodityServiceTest {
         var response = commodityService.rateCommodity(new CommodityRate(user.getUsername(), commodity.getId(), 8));
         // Assert
         Assertions.assertFalse(response.isSuccess());
-        var data = ((DataResponse<String>)response).getData();
-        Assertions.assertEquals("Commodity not found!", data);
+        Assertions.assertEquals("Commodity not found!", response.getMessage());
     }
 
     @Test
@@ -106,7 +107,6 @@ public class CommodityServiceTest {
         var response = commodityService.rateCommodity(new CommodityRate(user.getUsername(), commodity.getId(), 8));
         // Assert
         Assertions.assertFalse(response.isSuccess());
-        var data = ((DataResponse<String>)response).getData();
-        Assertions.assertEquals("User not found!", data);
+        Assertions.assertEquals("User not found!", response.getMessage());
     }
 }
