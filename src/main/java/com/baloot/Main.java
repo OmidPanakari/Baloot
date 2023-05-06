@@ -4,6 +4,7 @@ import com.baloot.dataAccess.Database;
 import com.baloot.dataAccess.repositories.*;
 import com.baloot.presentation.utils.Container;
 import com.baloot.service.CommodityService;
+import com.baloot.service.DiscountService;
 import com.baloot.service.ProviderService;
 import com.baloot.service.UserService;
 import org.springframework.boot.SpringApplication;
@@ -23,6 +24,7 @@ public class Main {
         Container.register(CommodityService.class);
         Container.register(ProviderService.class);
         Container.register(UserService.class);
+        Container.register(DiscountService.class);
 
         Container.resolve(Database.class).init();
         SpringApplication.run(Main.class, args);

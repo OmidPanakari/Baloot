@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = {"Authorization"})
 @RestController
 @RequestMapping("/commodities")
 public class CommodityController {
