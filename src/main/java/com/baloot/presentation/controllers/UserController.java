@@ -43,6 +43,9 @@ public class UserController {
         else if (Objects.equals(model.action(), "remove")) {
             return service.removeFromBuyList(new UserCommodityModel(username, model.commodityId()));
         }
+        else if (Objects.equals(model.action(), "buy")) {
+            return service.purchaseBuyList(username, model.discount());
+        }
         return DataResponse.Failed("Invalid action for request!");
     }
 

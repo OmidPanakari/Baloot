@@ -87,6 +87,6 @@ public class Commodity {
         comments.add(comment);
     }
     public boolean isInList(String category){
-        return categories.contains(category);
+        return categories.stream().anyMatch(c -> c.toLowerCase().contains(category.toLowerCase()));
     }
 }

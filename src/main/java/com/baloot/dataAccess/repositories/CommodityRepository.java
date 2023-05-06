@@ -61,7 +61,8 @@ public class CommodityRepository {
             if (Objects.equals(searchType, "category"))
                 return commodities.stream().filter(c -> c.isInList(search)).collect(Collectors.toList());
             else if (Objects.equals(searchType, "name"))
-                return commodities.stream().filter(c -> c.getName().contains(search)).collect(Collectors.toList());
+                return commodities.stream().filter(c -> c.getName().toLowerCase().contains(search.toLowerCase()))
+                    .collect(Collectors.toList());
         }
         return commodities;
     }

@@ -42,10 +42,14 @@ public class Database {
             var type = new TypeToken<List<User>>() {
             }.getType();
             users.addAll(gson.fromJson(userJson, type));
-            var providersJson = getUrl("http://5.253.25.110:5000/api/providers");
+            var providersJson = getUrl("http://5.253.25.110:5000/api/v2/providers");
             type = new TypeToken<List<Provider>>() {
             }.getType();
             providers.addAll(gson.fromJson(providersJson, type));
+            var discountsJson = getUrl("http://5.253.25.110:5000/api/discount");
+            type = new TypeToken<List<Discount>>() {
+            }.getType();
+            discounts.addAll(gson.fromJson(discountsJson, type));
             var commentsJson = getUrl("http://5.253.25.110:5000/api/comments");
             type = new TypeToken<List<Comment>>() {
             }.getType();

@@ -14,6 +14,8 @@ public class Provider {
     private String registryDate;
     @Getter
     private double rating;
+    @Getter
+    private String image;
     private transient List<Commodity> commodities;
 
     public List<Commodity> getCommodities() {
