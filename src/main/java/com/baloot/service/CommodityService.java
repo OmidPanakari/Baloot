@@ -99,7 +99,7 @@ public class CommodityService {
         var suggestions = new ArrayList<Commodity>();
         commodities.sort((a, b) -> (int) Math.signum(calculateScore(commodity, b) - calculateScore(commodity, a)));
         for (Commodity c : commodities) {
-            if (suggestions.size() == 5) {
+            if (suggestions.size() == 4) {
                 break;
             }
             if (c.getId() == commodityId) {
