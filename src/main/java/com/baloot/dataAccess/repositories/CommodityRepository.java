@@ -64,7 +64,7 @@ public class CommodityRepository {
                 return commodities.stream().filter(c -> c.getName().toLowerCase().contains(search.toLowerCase()))
                     .collect(Collectors.toList());
             else if (Objects.equals(searchType, "provider"))
-                return commodities.stream().filter(c -> c.getProviderName().toLowerCase().contains(search.toLowerCase()))
+                return commodities.stream().filter(c -> c.getProvider().getName().toLowerCase().contains(search.toLowerCase()))
                     .collect(Collectors.toList());
         }
         return commodities;

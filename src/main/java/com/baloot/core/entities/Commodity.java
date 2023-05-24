@@ -1,19 +1,27 @@
 package com.baloot.core.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@NoArgsConstructor
+@Table(name = "commodities")
 public class Commodity {
-    @Getter
+    @Id
+    @Getter @Setter
     private int id;
     @Getter
     private String name;
     @Getter
     private int price;
+    @ElementCollection
+    @CollectionTable(name = "categories", joinColumns = @JoinColumn(name = "commodityId"))
     @Getter
     private List<String> categories;
     @Getter
@@ -24,14 +32,16 @@ public class Commodity {
     private int rateCount;
     @Getter @Setter
     private int inStock;
-    @Getter
-    private int providerId;
+    @ManyToOne
+    @JoinColumn(name = "providerId")
     @Getter @Setter
-    private String providerName;
-    private transient List<CommodityRate> ratings;
-    private transient List<Comment> comments;
+    private Provider provider;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "commodity")
+    private List<CommodityRating> ratings;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "commodity")
+    private List<Comment> comments;
 
-    public List<CommodityRate> getRatings() {
+    public List<CommodityRating> getRatings() {
         if (ratings == null)
             ratings = new ArrayList<>();
         return ratings;
@@ -43,15 +53,17 @@ public class Commodity {
         return comments;
     }
 
-    public Commodity(Commodity commodity) {
-        id = commodity.id;
-        name = commodity.name;
-        price = commodity.price;
+    public Commodity(int id, String name, int price, int inStock, int providerId, List<String> categories, String image) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
         rating = 0;
         rateCount = 0;
-        inStock = commodity.inStock;
-        providerId = commodity.providerId;
-        categories = new ArrayList<>(commodity.categories);
+        this.inStock = inStock;
+        provider = new Provider();
+        provider.setId(providerId);
+        this.categories = new ArrayList<>(categories);
+        this.image = image;
         ratings = new ArrayList<>();
         comments = new ArrayList<>();
     }
@@ -71,9 +83,9 @@ public class Commodity {
         return String.join(",", categories);
     }
 
-    public void addRating(CommodityRate commodityRate) {
+    public void addRating(CommodityRating commodityRate) {
         for (int i = 0; i < ratings.size(); i++) {
-            if (Objects.equals(ratings.get(i).getUsername(), commodityRate.getUsername())) {
+            if (Objects.equals(ratings.get(i).getUser().getUsername(), commodityRate.getUser().getUsername())) {
                 ratings.set(i, commodityRate);
                 return;
             }

@@ -1,15 +1,24 @@
 package com.baloot.core.entities;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+@Entity
+@NoArgsConstructor
+@Table(name = "users")
 public class User {
-    @Getter
+    @Id
+    @Getter @Setter
     private String username;
     @Getter @Setter
     private String password;
+    @Column(unique = true)
     @Getter @Setter
     private String email;
     @Getter @Setter
@@ -18,20 +27,12 @@ public class User {
     private String address;
     @Getter @Setter
     private int credit;
-    private transient List<CommodityItem> buyList;
-    private transient List<CommodityItem> purchased;
-
-    public List<CommodityItem> getBuyList() {
-        if (buyList == null)
-            buyList = new ArrayList<>();
-        return buyList;
-    }
-
-    public List<CommodityItem> getPurchased() {
-        if (purchased == null)
-            purchased = new ArrayList<>();
-        return purchased;
-    }
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
+    @Getter
+    private Set<BuyListItem> buyList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
+    @Getter
+    private Set<PurchasedItem> purchased;
 
     public User(String password, String username, String email, String address, String birthDate, int credit){
         this.password = password;
@@ -40,8 +41,8 @@ public class User {
         this.credit = credit;
         this.username = username;
         this.birthDate = birthDate;
-        buyList = new ArrayList<>();
-        purchased = new ArrayList<>();
+        buyList = new HashSet<>();
+        purchased = new HashSet<>();
     }
 
     public User(User user){
@@ -51,29 +52,29 @@ public class User {
         credit = user.credit;
         username = user.username;
         birthDate = user.birthDate;
-        buyList = new ArrayList<>();
-        purchased = new ArrayList<>();
+        buyList = new HashSet<>();
+        purchased = new HashSet<>();
     }
 
     public boolean addToBuyList(Commodity commodity){
-        var ind = getBuyList().indexOf(getBuyList().stream().filter(c -> c.getCommodity().getId() == commodity.getId())
-                .findFirst().orElse(null));
-        if (ind == -1) {
-            buyList.add(new CommodityItem(commodity, 1));
+        var item = getBuyList().stream().filter(c -> c.getCommodity().getId() == commodity.getId())
+                .findFirst().orElse(null);
+        if (item == null) {
+            buyList.add(new BuyListItem(commodity, 1));
             return true;
         }
-        buyList.get(ind).setInCart(buyList.get(ind).getInCart() + 1);
+        item.setInCart(item.getInCart() + 1);
         return true;
     }
 
     public boolean removeFromBuyList(Commodity commodity){
-        var ind = getBuyList().indexOf(getBuyList().stream().filter(c -> c.getCommodity().getId() == commodity.getId())
-                .findFirst().orElse(null));
-        if (ind == -1)
+        var item = getBuyList().stream().filter(c -> c.getCommodity().getId() == commodity.getId())
+                .findFirst().orElse(null);
+        if (item == null)
             return false;
-        buyList.get(ind).setInCart(buyList.get(ind).getInCart() - 1);
-        if (buyList.get(ind).getInCart() == 0) {
-            buyList.remove(ind);
+        item.setInCart(item.getInCart() - 1);
+        if (item.getInCart() == 0) {
+            buyList.remove(item);
         }
         return true;
     }
@@ -91,15 +92,15 @@ public class User {
         return true;
     }
 
-    private void addToPurchaseList(List<CommodityItem> items) {
+    private void addToPurchaseList(Set<BuyListItem> items) {
         for (var item : items) {
-            var ind = getPurchased().indexOf(getPurchased().stream().filter(c ->
-                            c.getCommodity().getId() == item.getCommodity().getId())
-                    .findFirst().orElse(null));
-            if (ind == -1)
-                getPurchased().add(item);
+            var purchasedItem = getPurchased().stream().filter(c ->
+                    c.getCommodity().getId() == item.getCommodity().getId())
+                    .findFirst().orElse(null);
+            if (purchasedItem == null)
+                getPurchased().add(new PurchasedItem(item.getCommodity(), item.getInCart()));
             else
-                getPurchased().get(ind).setInCart(getPurchased().get(ind).getInCart() + item.getInCart());
+                purchasedItem.setInCart(purchasedItem.getInCart() + item.getInCart());
         }
     }
 

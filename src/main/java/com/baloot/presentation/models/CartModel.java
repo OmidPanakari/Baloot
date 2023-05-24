@@ -1,9 +1,9 @@
 package com.baloot.presentation.models;
 
-import com.baloot.core.entities.Commodity;
-import com.baloot.core.entities.CommodityItem;
+import com.baloot.core.entities.BuyListItem;
+import com.baloot.core.entities.PurchasedItem;
 
 import java.util.List;
 
-public record CartModel(List<CommodityItem> buyList, List<CommodityItem> purchasedList) {
+public record CartModel(List<BuyListItem> buyList, List<PurchasedItem> purchasedList) {
 }

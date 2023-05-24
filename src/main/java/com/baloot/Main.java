@@ -7,6 +7,7 @@ import com.baloot.service.CommodityService;
 import com.baloot.service.DiscountService;
 import com.baloot.service.ProviderService;
 import com.baloot.service.UserService;
+import com.baloot.utils.HibernateUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

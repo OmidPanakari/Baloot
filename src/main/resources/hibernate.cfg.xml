@@ -1,0 +1,28 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Database connection settings -->
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/test?useSSL=false&amp;serverTimezone=UTC</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">(mysecret123)</property>
+
+        <!-- JDBC connection pool (use the built-in) -->
+        <property name="connection.pool_size">10</property>
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+
+        <!-- Update schema automatically -->
+        <property name="hbm2ddl.auto">update</property>
+
+        <!-- Annotated entity classes -->
+        <!-- Add your entity classes here -->
+        <!-- <mapping class="com.example.hibernate_tutorial.entity.YourEntityClass"/> -->
+    </session-factory>
+</hibernate-configuration>

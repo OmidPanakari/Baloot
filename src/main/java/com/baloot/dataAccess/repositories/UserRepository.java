@@ -2,7 +2,10 @@ package com.baloot.dataAccess.repositories;
 
 import com.baloot.core.entities.User;
 import com.baloot.dataAccess.Database;
+import com.baloot.utils.HibernateUtil;
+import org.hibernate.Session;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class UserRepository {
@@ -29,9 +32,9 @@ public class UserRepository {
     }
 
     public User findUser(String username){
-        for (User u: database.getUsers())
-            if (Objects.equals(u.getUsername(), username))
-                return u;
-        return null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        var user = session.get(User.class, username);
+        session.close();
+        return user;
     }
 }

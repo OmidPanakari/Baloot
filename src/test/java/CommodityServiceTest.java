@@ -1,5 +1,5 @@
 import com.baloot.core.entities.Commodity;
-import com.baloot.core.entities.CommodityRate;
+import com.baloot.core.entities.CommodityRating;
 import com.baloot.core.entities.Provider;
 import com.baloot.core.entities.User;
 import com.baloot.dataAccess.repositories.CommentRepository;
@@ -22,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -72,7 +71,7 @@ public class CommodityServiceTest {
         when(userRepositoryMock.findUser(user.getUsername()))
                 .thenReturn(user);
         // Action
-        var response = commodityService.rateCommodity(new CommodityRate(user.getUsername(), commodity.getId(), 8));
+        var response = commodityService.rateCommodity(new CommodityRating(user.getUsername(), commodity.getId(), 8));
         // Assert
         Assertions.assertTrue(response.isSuccess());
         var data = ((DataResponse<RateModel>)response).getData();
@@ -88,7 +87,7 @@ public class CommodityServiceTest {
         when(commodityRepositoryMock.findCommodity(commodity.getId()))
                 .thenReturn(null);
         // Action
-        var response = commodityService.rateCommodity(new CommodityRate(user.getUsername(), commodity.getId(), 8));
+        var response = commodityService.rateCommodity(new CommodityRating(user.getUsername(), commodity.getId(), 8));
         // Assert
         Assertions.assertFalse(response.isSuccess());
         Assertions.assertEquals("Commodity not found!", response.getMessage());
@@ -104,7 +103,7 @@ public class CommodityServiceTest {
         when(userRepositoryMock.findUser(user.getUsername()))
                 .thenReturn(null);
         // Action
-        var response = commodityService.rateCommodity(new CommodityRate(user.getUsername(), commodity.getId(), 8));
+        var response = commodityService.rateCommodity(new CommodityRating(user.getUsername(), commodity.getId(), 8));
         // Assert
         Assertions.assertFalse(response.isSuccess());
         Assertions.assertEquals("User not found!", response.getMessage());

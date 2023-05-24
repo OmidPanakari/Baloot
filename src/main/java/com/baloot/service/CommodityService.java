@@ -2,7 +2,7 @@ package com.baloot.service;
 
 import com.baloot.core.entities.Comment;
 import com.baloot.core.entities.Commodity;
-import com.baloot.core.entities.CommodityRate;
+import com.baloot.core.entities.CommodityRating;
 import com.baloot.core.entities.User;
 import com.baloot.dataAccess.models.CommodityList;
 import com.baloot.dataAccess.repositories.CommentRepository;
@@ -37,7 +37,7 @@ public class CommodityService {
     }
 
     public Response addCommodity(Commodity commodity) {
-        var tempProvider = providerRepository.findProvider(commodity.getProviderId());
+        var tempProvider = providerRepository.findProvider(commodity.getProvider().getId());
         if (tempProvider == null)
             return DataResponse.Failed("Provider not found!");
         if (commodityRepository.addCommodity(commodity))
@@ -69,11 +69,11 @@ public class CommodityService {
         return DataResponse.Successful(commodity.getComments());
     }
 
-    public Response rateCommodity(CommodityRate commodityRate) {
-        Commodity commodityToRate = commodityRepository.findCommodity(commodityRate.getCommodityId());
+    public Response rateCommodity(CommodityRating commodityRate) {
+        Commodity commodityToRate = commodityRepository.findCommodity(commodityRate.getCommodity().getId());
         if (commodityToRate == null)
             return DataResponse.Failed("Commodity not found!");
-        if (userRepository.findUser(commodityRate.getUsername()) == null)
+        if (userRepository.findUser(commodityRate.getUser().getUsername()) == null)
             return DataResponse.Failed("User not found!");
         commodityToRate.addRating(commodityRate);
         return DataResponse.Successful(new RateModel(commodityToRate.getRating(), commodityToRate.getRateCount()));
@@ -82,7 +82,7 @@ public class CommodityService {
     public Response addComment(String text, String username, int commodityId) {
         var commodity = commodityRepository.findCommodity(commodityId);
         var user = userRepository.findUser(username);
-        var comment = new Comment(username, user.getEmail(), commodityId, text, LocalDate.now().toString());
+        var comment = new Comment(username, commodityId, text, LocalDate.now().toString());
         commentRepository.addComment(comment);
         commodity.addComment(comment);
         return DataResponse.Successful();

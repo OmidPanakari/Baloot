@@ -1,22 +1,31 @@
 package com.baloot.core.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@NoArgsConstructor
+@Table(name = "providers")
 public class Provider {
-    @Getter
+    @Id
+    @Getter @Setter
     private int id;
-    @Getter
+    @Getter @Setter
     private String name;
-    @Getter
+    @Getter @Setter
     private String registryDate;
-    @Getter
+    @Getter @Setter
     private double rating;
-    @Getter
+    @Column(length = 1000)
+    @Getter @Setter
     private String image;
-    private transient List<Commodity> commodities;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
+    private List<Commodity> commodities;
 
     public List<Commodity> getCommodities() {
         if (commodities == null)
@@ -24,23 +33,23 @@ public class Provider {
         return commodities;
     }
 
-    public Provider(Provider provider) {
-        id = provider.id;
-        name = provider.name;
-        registryDate = provider.registryDate;
+    public Provider(int id, String name, String registryDate, String image) {
+        this.id = id;
+        this.name = name;
+        this.registryDate = registryDate;
+        this.image = image;
         rating = 0;
-        commodities = new ArrayList<>();
     }
 
-    public double getRating() {
-        if (this.commodities.size() == 0)
-            return 0;
-        double res = 0;
-        for (var commodity: this.commodities) {
-            res += commodity.getRating();
-        }
-        return res / this.commodities.size();
-    }
+//    public double getRating() {
+//        if (this.commodities.size() == 0)
+//            return 0;
+//        double res = 0;
+//        for (var commodity: this.commodities) {
+//            res += commodity.getRating();
+//        }
+//        return res / this.commodities.size();
+//    }
 
     public void addCommodity(Commodity commodity){
         if (commodities == null)

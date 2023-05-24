@@ -1,6 +1,6 @@
 package com.baloot.presentation.controllers;
 
-import com.baloot.core.entities.CommodityRate;
+import com.baloot.core.entities.CommodityRating;
 import com.baloot.dataAccess.utils.QueryModel;
 import com.baloot.presentation.models.AddCommentModel;
 import com.baloot.presentation.models.AddRatingModel;
@@ -55,6 +55,6 @@ public class CommodityController {
     public Response addRating(@PathVariable int id, @RequestBody AddRatingModel ratingModel, HttpServletRequest request) {
         var service = Container.resolve(CommodityService.class);
         var username = (String) request.getServletContext().getAttribute("username");
-        return service.rateCommodity(new CommodityRate(username, id, ratingModel.rate()));
+        return service.rateCommodity(new CommodityRating(username, id, ratingModel.rate()));
     }
 }

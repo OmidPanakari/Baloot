@@ -69,7 +69,7 @@ public class UserService {
         User user = userRepository.findUser(username);
         if (user == null)
             return DataResponse.Failed("User not found!");
-        return DataResponse.Successful(new CartModel(user.getBuyList(), user.getPurchased()));
+        return DataResponse.Successful(new CartModel(user.getBuyList().stream().toList(), user.getPurchased().stream().toList()));
     }
 
     public Response getUser(String username) {
