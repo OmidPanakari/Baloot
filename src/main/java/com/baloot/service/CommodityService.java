@@ -14,7 +14,9 @@ import com.baloot.presentation.models.RateModel;
 import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
 import com.baloot.service.models.CommodityListModel;
+import com.baloot.service.models.CommodityItemModel;
 import com.baloot.service.models.CommodityModel;
+import com.baloot.service.models.Converter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -66,25 +68,31 @@ public class CommodityService {
         Commodity commodity = commodityRepository.findCommodity(commodityId);
         if (commodity == null)
             return DataResponse.Failed("Commodity not found!");
-        return DataResponse.Successful(commodity.getComments());
+        return DataResponse.Successful(Converter.convertToModel(commodity.getComments()));
     }
 
     public Response rateCommodity(CommodityRating commodityRate) {
         Commodity commodityToRate = commodityRepository.findCommodity(commodityRate.getCommodity().getId());
         if (commodityToRate == null)
             return DataResponse.Failed("Commodity not found!");
-        if (userRepository.findUser(commodityRate.getUser().getUsername()) == null)
+        var user = userRepository.findUser(commodityRate.getUser().getUsername());
+        if (user == null)
             return DataResponse.Failed("User not found!");
-        commodityToRate.addRating(commodityRate);
-        return DataResponse.Successful(new RateModel(commodityToRate.getRating(), commodityToRate.getRateCount()));
+        commodityRate = commodityRepository.rateCommodity(commodityToRate, user, commodityRate.getRating());
+        return DataResponse.Successful(new RateModel(commodityRate.getCommodity().getRating(),
+            commodityRate.getCommodity().getRateCount()));
     }
 
     public Response addComment(String text, String username, int commodityId) {
         var commodity = commodityRepository.findCommodity(commodityId);
+        if (commodity == null) {
+            return DataResponse.Failed("Commodity not found!");
+        }
         var user = userRepository.findUser(username);
+        if (user == null)
+            return DataResponse.Failed("User not found!");
         var comment = new Comment(username, commodityId, text, LocalDate.now().toString());
         commentRepository.addComment(comment);
-        commodity.addComment(comment);
         return DataResponse.Successful();
     }
 
@@ -96,41 +104,26 @@ public class CommodityService {
         if (commodity == null) {
             return DataResponse.Failed("Commodity not found!");
         }
-        var commodities = commodityRepository.getCommodities(null).commodities();
-        var suggestions = new ArrayList<Commodity>();
-        commodities.sort((a, b) -> (int) Math.signum(calculateScore(commodity, b) - calculateScore(commodity, a)));
-        for (Commodity c : commodities) {
-            if (suggestions.size() == 4) {
-                break;
-            }
-            if (c.getId() == commodityId) {
-                continue;
-            }
-            suggestions.add(c);
-        }
+        var suggestions = commodityRepository.getSuggestions(commodity);
         return DataResponse.Successful(convertToModel(suggestions, user));
     }
 
-    private double calculateScore(Commodity a, Commodity b) {
-        boolean hasCommon = false;
-        for (String category : a.getCategories()) {
-            if (b.getCategories().contains(category)) {
-                hasCommon = true;
-                break;
-            }
-        }
-        return b.getRating() + (hasCommon ? 1:0) * 11;
-    }
-    private CommodityModel convertToModel(Commodity commodity, User user) {
+    private CommodityItemModel convertToModel(Commodity commodity, User user) {
         var item = user.getBuyList().stream()
                 .filter(c -> c.getCommodity().getId() == commodity.getId())
                 .findFirst()
                 .orElse(null);
         int inCart = (item == null) ? 0 : item.getInCart();
-        return new CommodityModel(commodity, inCart);
+        return new CommodityItemModel(convertToModel(commodity), inCart);
     }
 
-    private List<CommodityModel> convertToModel(List<Commodity> list, User user) {
+    private CommodityModel convertToModel(Commodity commodity) {
+        return new CommodityModel(commodity.getId(), commodity.getName(), commodity.getPrice(), commodity.getImage(),
+            commodity.getRating(), commodity.getRateCount(), commodity.getInStock(), commodity.getProvider().getName(),
+            commodity.getProvider().getId(), commodity.getCategories());
+    }
+
+    private List<CommodityItemModel> convertToModel(List<Commodity> list, User user) {
         return list.stream().map(c -> convertToModel(c, user)).collect(Collectors.toList());
     }
 

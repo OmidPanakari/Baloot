@@ -1,14 +1,17 @@
 package com.baloot.dataAccess.repositories;
 
 import com.baloot.core.entities.Commodity;
+import com.baloot.core.entities.CommodityRating;
+import com.baloot.core.entities.User;
 import com.baloot.dataAccess.Database;
 import com.baloot.dataAccess.models.CommodityList;
 import com.baloot.dataAccess.utils.QueryModel;
+import com.baloot.utils.HibernateUtil;
+import org.hibernate.Session;
 
-import java.util.Comparator;
+import javax.persistence.criteria.*;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class CommodityRepository {
     private final Database database;
@@ -21,82 +24,144 @@ public class CommodityRepository {
         var existingCommodity = findCommodity(commodity.getId());
         if (existingCommodity != null)
             return false;
-        database.getCommodities().add(commodity);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        var transaction = session.beginTransaction();
+        session.save(commodity);
+        transaction.commit();
+        session.close();
         return true;
     }
 
-    public CommodityList getCommodities(QueryModel query) {
-        var commodities = database.getCommodities();
-        return applyQuery(commodities, query);
+    public CommodityList getCommodities(QueryModel queryModel) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        var result = applyQuery(session, queryModel);
+        session.close();
+        return result;
     }
 
     public Commodity findCommodity(int commodityId) {
-        for (Commodity c : database.getCommodities())
-            if (c.getId() == commodityId)
-                return c;
-        return null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        var commodity = session.get(Commodity.class, commodityId);
+        session.close();
+        return commodity;
     }
 
-//    public List<Commodity> getCommoditiesByPrice(int startPrice, int endPrice, int page, int limit){
-//        var commoditiesListByPrice = new ArrayList<Commodity>();
-//        for (Commodity c : database.getCommodities()) {
-//            if (c.getPrice() >= startPrice && c.getPrice() <= endPrice)
-//                commoditiesListByPrice.add(c);
-//        }
-//        return applyQuery(commoditiesListByPrice, page, limit);
-//    }
-
-    private CommodityList applyQuery(List<Commodity> commodities, QueryModel query) {
-        if (query == null)
-            return new CommodityList(commodities, 1);
-        var result = commodities;
-        result = applyAvailableFilter(result, query.available());
-        result = applySearch(result, query.search(), query.searchType());
-        applySort(result, query.sort());
-        return applyPagination(result, query.page(), query.limit());
+    public List<Commodity> getSuggestions(Commodity commodity) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        var categories = commodity.getCategories();
+        var suggestions = session
+            .createQuery("SELECT c FROM Commodity c WHERE c.id <> :commodityId AND c.categories IN :selectedCategories ORDER BY SIZE(c.categories) DESC",
+                Commodity.class)
+            .setParameter("commodityId", commodity.getId())
+            .setParameter("selectedCategories", categories)
+            .setMaxResults(4)
+            .list();
+        session.close();
+        return suggestions;
     }
 
-    private List<Commodity> applySearch(List<Commodity> commodities, String search, String searchType) {
-        if (search != null) {
-            if (Objects.equals(searchType, "category"))
-                return commodities.stream().filter(c -> c.isInList(search)).collect(Collectors.toList());
-            else if (Objects.equals(searchType, "name"))
-                return commodities.stream().filter(c -> c.getName().toLowerCase().contains(search.toLowerCase()))
-                    .collect(Collectors.toList());
-            else if (Objects.equals(searchType, "provider"))
-                return commodities.stream().filter(c -> c.getProvider().getName().toLowerCase().contains(search.toLowerCase()))
-                    .collect(Collectors.toList());
+    public CommodityRating rateCommodity(Commodity commodity, User user, double rate) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        var transaction = session.beginTransaction();
+        var rating = session
+            .createQuery("FROM CommodityRating WHERE commodityId = :commodityId AND username = :username", CommodityRating.class)
+            .setParameter("commodityId", commodity.getId())
+            .setParameter("username", user.getUsername())
+            .uniqueResult();
+        if (rating != null) {
+            rating.setRating(rate);
+            session.update(rating);
         }
-        return commodities;
+        else {
+            rating = new CommodityRating(commodity, user, rate);
+            session.save(rating);
+            commodity.addRating(rating);
+        }
+        rating.getCommodity().updateRating(rating);
+        session.update(rating.getCommodity());
+        transaction.commit();
+        session.close();
+        return rating;
     }
 
-    private void applySort(List<Commodity> commodities, String sort) {
+    private CommodityList applyQuery(Session session, QueryModel queryModel) {
+        return new CommodityList(getFilteredResult(session, queryModel), getTotalPages(session, queryModel));
+    }
+
+    private List<Commodity> getFilteredResult(Session session, QueryModel queryModel) {
+        var builder = session.getCriteriaBuilder();
+        var query = builder.createQuery(Commodity.class);
+        var root = query.from(Commodity.class);
+        query = query.select(root);
+        if (queryModel == null)
+            return session.createQuery(query).getResultList();
+        query = applyFilters(root, query, builder, queryModel);
+        return applyPagination(query, builder, root, session, queryModel.page(), queryModel.limit());
+    }
+
+    private int getTotalPages(Session session, QueryModel queryModel) {
+        if (queryModel == null || queryModel.limit() == null || queryModel.limit() == 0)
+            return 1;
+        var builder = session.getCriteriaBuilder();
+        var query = builder.createQuery(Long.class);
+        var root = query.from(Commodity.class);
+        query = query.select(builder.count(root));
+        query = applyFilters(root, query, builder, queryModel);
+        var totalResults = session.createQuery(query).getSingleResult();
+        return (Math.toIntExact(totalResults) + queryModel.limit() - 1) / queryModel.limit();
+    }
+
+    private <T> CriteriaQuery<T>  applyFilters(Root<Commodity> root, CriteriaQuery<T> query,
+                                               CriteriaBuilder builder, QueryModel queryModel) {
+        var filteredQuery = query;
+        filteredQuery = applyAvailableFilter(root, filteredQuery, builder, queryModel.available());
+        filteredQuery = applySearch(root, filteredQuery, builder, queryModel.search(), queryModel.searchType());
+        filteredQuery = applySort(root, filteredQuery, builder, queryModel.sort());
+        return filteredQuery;
+    }
+
+    private <T> CriteriaQuery<T> applySearch(Root<Commodity> root, CriteriaQuery<T> query,
+                                        CriteriaBuilder builder, String search, String searchType) {
+        if (search != null) {
+            if (Objects.equals(searchType, "category")) {
+                Join<Commodity, String> categoryJoin = root.join("categories");
+                return query.where(builder.like(categoryJoin, "%" + search + "%"));
+            }
+            else if (Objects.equals(searchType, "name"))
+                return query.where(builder.like(root.get("name"), "%" + search + "%"));
+            else if (Objects.equals(searchType, "provider")) {
+                var providerJoin = root.join("provider");
+                return query.where(builder.like(providerJoin.get("name"), "%" + search + "%"));
+            }
+        }
+        return query;
+    }
+
+    private <T> CriteriaQuery<T> applySort(Root<Commodity> root, CriteriaQuery<T> query,
+                           CriteriaBuilder builder, String sort) {
         if (Objects.equals(sort, "name")) {
-            Comparator<Commodity> byName = Comparator.comparing(Commodity::getName);
-            commodities.sort(byName);
+            return query.orderBy(builder.asc(root.get("name")));
         }
         else if (Objects.equals(sort, "price")) {
-            Comparator<Commodity> byPrice = Comparator.comparingInt(Commodity::getPrice);
-            commodities.sort(byPrice);
+            return query.orderBy(builder.asc(root.get("price")));
         }
+        else return query;
     }
 
-    private CommodityList applyPagination(List<Commodity> commodities, Integer page, Integer limit) {
+    private List<Commodity> applyPagination(CriteriaQuery<Commodity> query, CriteriaBuilder builder, Root<Commodity> root,
+                                                  Session session, Integer page, Integer limit) {
+        var typedQuery = session.createQuery(query);
         if (limit == null || limit == 0)
-            return new CommodityList(commodities, 1);
+            return typedQuery.getResultList();
         if (page == null || page == 0)
-            return new CommodityList(commodities.stream()
-                    .limit(limit).collect(Collectors.toList()),
-                    (commodities.size() + limit - 1) / limit);
-        return new CommodityList(commodities.stream()
-                .skip((long) (page - 1) * limit)
-                .limit(limit).collect(Collectors.toList()),
-                (commodities.size() + limit - 1) / limit);
+            return typedQuery.setMaxResults(limit).getResultList();
+        return typedQuery.setFirstResult((page - 1) * limit).setMaxResults(limit).getResultList();
     }
 
-    private List<Commodity> applyAvailableFilter(List<Commodity> commodities, Boolean available) {
+    private <T> CriteriaQuery<T> applyAvailableFilter(Root<Commodity> root, CriteriaQuery<T> query,
+                                                          CriteriaBuilder builder, Boolean available) {
         if (available == null || !available)
-            return commodities;
-        return commodities.stream().filter(c -> c.getInStock() > 0).collect(Collectors.toList());
+            return query;
+        return query.where(builder.gt(root.get("inStock"), 0));
     }
 }

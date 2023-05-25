@@ -2,6 +2,7 @@ package com.baloot.core.entities;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -21,8 +22,14 @@ public class CommodityRating {
     @JoinColumn(name = "commodityId")
     @Getter
     private Commodity commodity;
-    @Getter
+    @Getter @Setter
     private double rating;
+
+    public CommodityRating(Commodity commodity, User user, double rating) {
+        this.commodity = commodity;
+        this.user = user;
+        this.rating = rating;
+    }
 
     public CommodityRating(String username, int commodityId, double rating) {
         this.user = new User();

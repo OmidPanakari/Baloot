@@ -6,7 +6,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -33,8 +35,9 @@ public class Comment {
     @JoinColumn(name = "username")
     @Getter @Setter
     private User user;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "comment")
-    private List<Vote> votes;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "comment", fetch = FetchType.EAGER)
+    @Getter
+    private Set<Vote> votes;
 
     public Comment(String username, int commodityId, String text, String date) {
         this.user = new User();
@@ -46,13 +49,7 @@ public class Comment {
         this.id = NextID++;
         likes = 0;
         dislikes = 0;
-        votes = new ArrayList<>();
-    }
-
-    public List<Vote> getVotes() {
-        if (votes == null)
-            votes = new ArrayList<>();
-        return votes;
+        votes = new HashSet<>();
     }
 
     public void voteComment(String username, int vote){

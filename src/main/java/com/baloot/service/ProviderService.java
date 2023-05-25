@@ -8,6 +8,7 @@ import com.baloot.dataAccess.repositories.UserRepository;
 import com.baloot.presentation.models.ProviderModel;
 import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
+import com.baloot.service.models.CommodityItemModel;
 import com.baloot.service.models.CommodityModel;
 
 import java.util.stream.Collectors;
@@ -39,13 +40,19 @@ public class ProviderService {
         return DataResponse.Successful(convertToModel(provider, user));
     }
 
-    private CommodityModel convertToModel(Commodity commodity, User user) {
+    private CommodityItemModel convertToModel(Commodity commodity, User user) {
         var item = user.getBuyList().stream()
             .filter(c -> c.getCommodity().getId() == commodity.getId())
             .findFirst()
             .orElse(null);
         int inCart = (item == null) ? 0 : item.getInCart();
-        return new CommodityModel(commodity, inCart);
+        return new CommodityItemModel(convertToModel(commodity), inCart);
+    }
+
+    private CommodityModel convertToModel(Commodity commodity) {
+        return new CommodityModel(commodity.getId(), commodity.getName(), commodity.getPrice(), commodity.getImage(),
+            commodity.getRating(), commodity.getRateCount(), commodity.getInStock(), commodity.getProvider().getName(),
+            commodity.getProvider().getId(), commodity.getCategories());
     }
 
     private ProviderModel convertToModel(Provider provider, User user) {

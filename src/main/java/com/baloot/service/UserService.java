@@ -4,6 +4,7 @@ import com.baloot.core.entities.Comment;
 import com.baloot.core.entities.User;
 import com.baloot.dataAccess.repositories.DiscountRepository;
 import com.baloot.presentation.models.CartModel;
+import com.baloot.service.models.Converter;
 import com.baloot.service.models.UserCommodityModel;
 import com.baloot.dataAccess.repositories.CommentRepository;
 import com.baloot.dataAccess.repositories.CommodityRepository;
@@ -95,7 +96,7 @@ public class UserService {
         if (comment == null)
             return DataResponse.Failed("Comment not found!");
         comment.voteComment(username, vote);
-        return DataResponse.Successful(comment);
+        return DataResponse.Successful(Converter.convertToModel(comment));
     }
 
     public Response purchaseBuyList(String username, String discountCode) {

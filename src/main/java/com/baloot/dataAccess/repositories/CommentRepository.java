@@ -2,6 +2,8 @@ package com.baloot.dataAccess.repositories;
 
 import com.baloot.core.entities.Comment;
 import com.baloot.dataAccess.Database;
+import com.baloot.utils.HibernateUtil;
+import org.hibernate.Session;
 
 public class CommentRepository {
     private final Database database;
@@ -11,14 +13,17 @@ public class CommentRepository {
     }
 
     public Comment getComment(int commentId){
-        for (var comment: database.getComments()) {
-            if (comment.getId() == commentId)
-                return comment;
-        }
-        return null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        var comment = session.get(Comment.class, commentId);
+        session.close();
+        return comment;
     }
 
     public void addComment(Comment comment) {
-        database.addComment(comment);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        var transaction = session.beginTransaction();
+        session.save(comment);
+        transaction.commit();
+        session.close();
     }
 }

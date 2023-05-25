@@ -18,14 +18,16 @@ public class CommodityController {
     public Response getCommodities(@ModelAttribute QueryModel query, HttpServletRequest request) {
         var service = Container.resolve(CommodityService.class);
         var username = (String) request.getServletContext().getAttribute("username");
-        return service.getCommodities(query, username);
+        var resp = service.getCommodities(query, username);
+        return resp;
     }
 
     @GetMapping("/{id}")
     public Response getCommodity(@PathVariable int id, HttpServletRequest request) {
         var service = Container.resolve(CommodityService.class);
         var username = (String) request.getServletContext().getAttribute("username");
-        return service.getCommodityById(id, username);
+        var resp = service.getCommodityById(id, username);
+        return resp;
     }
 
     @GetMapping("/{id}/suggestions")

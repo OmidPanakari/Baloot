@@ -1,6 +1,6 @@
 package com.baloot.service.models;
 
-import com.baloot.core.entities.Commodity;
+import java.util.List;
 
-public record CommodityModel(Commodity commodity, int inCart) {
-}
+public record CommodityModel(int id, String name, int price, String image, double rating, int rateCount, int inStock,
+                             String providerName, int providerId, List<String> categories){}
