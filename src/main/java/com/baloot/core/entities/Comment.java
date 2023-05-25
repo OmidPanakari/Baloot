@@ -27,9 +27,9 @@ public class Comment {
     private String text;
     @Getter
     private String date;
-    @Getter
+    @Transient
     private int likes;
-    @Getter
+    @Transient
     private int dislikes;
     @ManyToOne
     @JoinColumn(name = "username")
@@ -52,40 +52,15 @@ public class Comment {
         votes = new HashSet<>();
     }
 
-    public void voteComment(String username, int vote){
-        var prev = getVotes().stream().filter(v -> v.getUser().getUsername().equals(username)).findFirst().orElse(null);
-        if (prev == null) {
-            getVotes().add(new Vote(username, vote));
-            if (vote == 1)
-                likes += 1;
-            else if (vote == -1)
-                dislikes += 1;
-        }
-        else {
-            if (vote == 1) {
-                if (prev.getVote() == 1) {
-                    getVotes().remove(prev);
-                    likes -= 1;
-                }
-                else {
-                    prev.setVote(1);
-                    likes += 1;
-                    dislikes -= 1;
-                }
-            }
-            else {
-                if (prev.getVote() == -1) {
-                    getVotes().remove(prev);
-                    dislikes -= 1;
-                }
-                else {
-                    prev.setVote(-1);
-                    likes -= 1;
-                    dislikes += 1;
-                }
-            }
-        }
+    public void addVote(Vote vote) {
+        votes.add(vote);
     }
 
+    public int getLikes() {
+        return votes.stream().mapToInt(Vote::getVote).filter(v -> v > 0).sum();
+    }
+    public int getDislikes() {
+        return -votes.stream().mapToInt(Vote::getVote).filter(v -> v < 0).sum();
+    }
 
 }

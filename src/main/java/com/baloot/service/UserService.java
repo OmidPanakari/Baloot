@@ -95,7 +95,7 @@ public class UserService {
         Comment comment = commentRepository.getComment(commentId);
         if (comment == null)
             return DataResponse.Failed("Comment not found!");
-        comment.voteComment(username, vote);
+        comment = commentRepository.voteComment(comment, user, vote);
         return DataResponse.Successful(Converter.convertToModel(comment));
     }
 

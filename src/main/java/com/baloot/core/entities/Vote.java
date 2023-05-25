@@ -16,12 +16,18 @@ public class Vote {
         this.vote = vote;
     }
 
+    public Vote(User user, int vote, Comment comment) {
+        this.user = user;
+        this.vote = vote;
+        this.comment = comment;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     private int id;
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "username")
     @Getter
     private User user;
     @Getter @Setter
