@@ -2,6 +2,8 @@ package com.baloot.dataAccess.repositories;
 
 import com.baloot.core.entities.Provider;
 import com.baloot.dataAccess.Database;
+import com.baloot.utils.HibernateUtil;
+import org.hibernate.Session;
 
 import java.util.Objects;
 
@@ -11,14 +13,10 @@ public class ProviderRepository {
         this.database = database;
     }
 
-    public void addProvider(Provider provider) {
-        database.getProviders().add(provider);
-    }
-
     public Provider findProvider(int id){
-        for (Provider p: database.getProviders())
-            if (Objects.equals(p.getId(), id))
-                return p;
-        return null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        var provider = session.get(Provider.class, id);
+        session.close();
+        return provider;
     }
 }

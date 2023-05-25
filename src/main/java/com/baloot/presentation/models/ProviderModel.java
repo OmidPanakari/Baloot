@@ -5,5 +5,5 @@ import com.baloot.service.models.CommodityItemModel;
 
 import java.util.List;
 
-public record ProviderModel(Provider provider, List<CommodityItemModel> commodities) {
+public record ProviderModel(String name, String image, String registryDate, List<CommodityItemModel> commodities) {
 }

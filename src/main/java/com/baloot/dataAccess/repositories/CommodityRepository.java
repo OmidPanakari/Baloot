@@ -9,7 +9,11 @@ import com.baloot.dataAccess.utils.QueryModel;
 import com.baloot.utils.HibernateUtil;
 import org.hibernate.Session;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,12 +52,12 @@ public class CommodityRepository {
 
     public List<Commodity> getSuggestions(Commodity commodity) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        var categories = commodity.getCategories();
+        var categoryList = new ArrayList<>(session.get(Commodity.class, commodity.getId()).getCategories());
         var suggestions = session
-            .createQuery("SELECT c FROM Commodity c WHERE c.id <> :commodityId AND c.categories IN :selectedCategories ORDER BY SIZE(c.categories) DESC",
+            .createQuery("SELECT c FROM Commodity c JOIN c.categories cat WHERE c.id <> :commodityId AND cat IN :selectedCategories ORDER BY SIZE(c.categories) DESC",
                 Commodity.class)
             .setParameter("commodityId", commodity.getId())
-            .setParameter("selectedCategories", categories)
+            .setParameterList("selectedCategories", categoryList)
             .setMaxResults(4)
             .list();
         session.close();
@@ -77,7 +81,6 @@ public class CommodityRepository {
             session.save(rating);
             commodity.addRating(rating);
         }
-        rating.getCommodity().updateRating(rating);
         session.update(rating.getCommodity());
         transaction.commit();
         session.close();

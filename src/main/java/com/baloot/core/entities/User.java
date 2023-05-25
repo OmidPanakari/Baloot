@@ -2,11 +2,10 @@ package com.baloot.core.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.Session;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -56,49 +55,36 @@ public class User {
         purchased = new HashSet<>();
     }
 
-    public boolean addToBuyList(Commodity commodity){
+    public void addToBuyList(Commodity commodity){
         var item = getBuyList().stream().filter(c -> c.getCommodity().getId() == commodity.getId())
                 .findFirst().orElse(null);
         if (item == null) {
-            buyList.add(new BuyListItem(commodity, 1));
-            return true;
+            buyList.add(new BuyListItem(this, commodity, 1));
+            return;
         }
         item.setInCart(item.getInCart() + 1);
-        return true;
     }
 
-    public boolean removeFromBuyList(Commodity commodity){
+    public boolean removeFromBuyList(Commodity commodity, Session session){
         var item = getBuyList().stream().filter(c -> c.getCommodity().getId() == commodity.getId())
                 .findFirst().orElse(null);
         if (item == null)
             return false;
         item.setInCart(item.getInCart() - 1);
         if (item.getInCart() == 0) {
+            session.remove(item);
             buyList.remove(item);
         }
         return true;
     }
 
-    public boolean purchaseBuyList(Discount discount) {
-        var price = getBuyList().stream().mapToInt(c -> c.getCommodity().getPrice()).sum();
-        if (discount != null) {
-            price = price * (100 - discount.getDiscount()) / 100;
-        }
-        if (credit < price)
-            return false;
-        credit -= price;
-        addToPurchaseList(buyList);
-        buyList.clear();
-        return true;
-    }
-
-    private void addToPurchaseList(Set<BuyListItem> items) {
+    public void addToPurchaseList(Set<BuyListItem> items) {
         for (var item : items) {
             var purchasedItem = getPurchased().stream().filter(c ->
                     c.getCommodity().getId() == item.getCommodity().getId())
                     .findFirst().orElse(null);
             if (purchasedItem == null)
-                getPurchased().add(new PurchasedItem(item.getCommodity(), item.getInCart()));
+                getPurchased().add(new PurchasedItem(item.getUser(), item.getCommodity(), item.getInCart()));
             else
                 purchasedItem.setInCart(purchasedItem.getInCart() + item.getInCart());
         }

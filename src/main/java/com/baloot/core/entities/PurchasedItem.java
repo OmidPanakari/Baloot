@@ -10,11 +10,13 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "purchasedItems")
 public class PurchasedItem {
-    public PurchasedItem(Commodity commodity, int inCart) {
+    public PurchasedItem(User user, Commodity commodity, int inCart) {
         this.inCart = inCart;
         this.commodity = commodity;
+        this.user = user;
     }
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     private int id;
     @Getter @Setter

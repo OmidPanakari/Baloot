@@ -4,6 +4,7 @@ import com.baloot.core.entities.Comment;
 import com.baloot.core.entities.User;
 import com.baloot.dataAccess.repositories.DiscountRepository;
 import com.baloot.presentation.models.CartModel;
+import com.baloot.service.models.CommodityItemModel;
 import com.baloot.service.models.Converter;
 import com.baloot.service.models.UserCommodityModel;
 import com.baloot.dataAccess.repositories.CommentRepository;
@@ -45,11 +46,8 @@ public class UserService {
             return DataResponse.Failed("User not found!");
         if (commodity.getInStock() == 0)
             return DataResponse.Failed("Not enough stock!");
-        if (userToAdd.addToBuyList(commodity)) {
-            commodity.setInStock(commodity.getInStock() - 1);
-            return DataResponse.Successful(commodity.getInStock());
-        }
-        return DataResponse.Failed("Commodity already exists in the buy list!");
+        userRepository.addToBuyList(userToAdd, commodity);
+        return DataResponse.Successful(commodity.getInStock());
     }
 
     public Response removeFromBuyList(UserCommodityModel userCommodityModel) {
@@ -59,8 +57,7 @@ public class UserService {
             return DataResponse.Failed("Commodity not found!");
         if (userToAdd == null)
             return DataResponse.Failed("User not found!");
-        if (userToAdd.removeFromBuyList(commodity)) {
-            commodity.setInStock(commodity.getInStock() + 1);
+        if (userRepository.removeFromBuyList(userToAdd, commodity)) {
             return DataResponse.Successful(commodity.getInStock());
         }
         return DataResponse.Failed("Commodity does not exist in the buy list.");
@@ -70,21 +67,24 @@ public class UserService {
         User user = userRepository.findUser(username);
         if (user == null)
             return DataResponse.Failed("User not found!");
-        return DataResponse.Successful(new CartModel(user.getBuyList().stream().toList(), user.getPurchased().stream().toList()));
+        var buyList = user.getBuyList().stream().map(c -> new CommodityItemModel(Converter.convertToModel(c.getCommodity()),
+            c.getInCart())).toList();
+        var purchasedList = user.getPurchased().stream().map(c -> new CommodityItemModel(Converter.convertToModel(c.getCommodity()),
+            c.getInCart())).toList();
+        return DataResponse.Successful(new CartModel(buyList, purchasedList));
     }
 
     public Response getUser(String username) {
         User user = userRepository.findUser(username);
         if (user == null)
             return DataResponse.Failed("User not found!");
-        return DataResponse.Successful(user);
+        return DataResponse.Successful(Converter.convertToModel(user));
     }
 
     public Response addCredit(String username, int credit) {
-        User user = userRepository.findUser(username);
-        if (user == null)
+        var result = userRepository.addCredit(username, credit);
+        if (!result)
             return DataResponse.Failed("User not found!");
-        user.setCredit(user.getCredit() + credit);
         return DataResponse.Successful("User credit updated.");
     }
 
@@ -104,7 +104,7 @@ public class UserService {
         var discount = discountRepository.getDiscount(discountCode);
         if (user == null)
             return DataResponse.Failed("User not found!");
-        if (!user.purchaseBuyList(discount))
+        if (!userRepository.purchaseBuyList(user, discount))
             return DataResponse.Failed("Not enough credit!");
         return DataResponse.Successful();
     }

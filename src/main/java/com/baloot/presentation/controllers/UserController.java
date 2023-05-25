@@ -28,7 +28,7 @@ public class UserController {
 
     @GetMapping("/cart")
     public Response GetBuyList(HttpServletRequest request) {
-        var service = Container.resolve(UserService.class);
+            var service = Container.resolve(UserService.class);
         var username = (String) request.getServletContext().getAttribute("username");
         return service.getCart(username);
     }
@@ -46,7 +46,8 @@ public class UserController {
             return service.removeFromBuyList(new UserCommodityModel(username, model.commodityId()));
         }
         else if (Objects.equals(model.action(), "buy")) {
-            return service.purchaseBuyList(username, model.discount());
+            var resp =  service.purchaseBuyList(username, model.discount());
+            return resp;
         }
         return DataResponse.Failed("Invalid action for request!");
     }

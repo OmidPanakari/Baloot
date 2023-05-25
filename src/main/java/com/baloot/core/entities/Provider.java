@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -19,19 +20,14 @@ public class Provider {
     private String name;
     @Getter @Setter
     private String registryDate;
-    @Getter @Setter
+    @Transient
     private double rating;
     @Column(length = 1000)
     @Getter @Setter
     private String image;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
-    private List<Commodity> commodities;
-
-    public List<Commodity> getCommodities() {
-        if (commodities == null)
-            commodities = new ArrayList<>();
-        return commodities;
-    }
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider", fetch = FetchType.EAGER)
+    @Getter
+    private Set<Commodity> commodities;
 
     public Provider(int id, String name, String registryDate, String image) {
         this.id = id;
@@ -41,22 +37,7 @@ public class Provider {
         rating = 0;
     }
 
-//    public double getRating() {
-//        if (this.commodities.size() == 0)
-//            return 0;
-//        double res = 0;
-//        for (var commodity: this.commodities) {
-//            res += commodity.getRating();
-//        }
-//        return res / this.commodities.size();
-//    }
-
-    public void addCommodity(Commodity commodity){
-        if (commodities == null)
-            commodities = new ArrayList<>();
-        rating *= commodities.size();
-        rating += commodity.getRating();
-        commodities.add(commodity);
-        rating /= commodities.size();
+    public double getRating() {
+        return commodities.stream().mapToDouble(Commodity::getRating).sum() / commodities.size();
     }
 }

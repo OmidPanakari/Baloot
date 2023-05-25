@@ -20,25 +20,6 @@ import java.util.stream.Collectors;
 
 public class Database {
 
-    @Getter
-    private List<User> users;
-    @Getter
-    private List<Provider> providers;
-    @Getter
-    private List<Commodity> commodities;
-    @Getter
-    private List<Comment> comments;
-    @Getter
-    private List<Discount> discounts;
-
-    public Database() {
-        users = new ArrayList<>();
-        providers = new ArrayList<>();
-        commodities = new ArrayList<>();
-        comments = new ArrayList<>();
-        discounts = new ArrayList<>();
-    }
-
     public void init() {
         var gson = new Gson();
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -116,10 +97,6 @@ public class Database {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void addComment(Comment comment) {
-        comments.add(comment);
     }
 
     private String getUrl(String address) throws IOException {

@@ -2,6 +2,8 @@ package com.baloot.dataAccess.repositories;
 
 import com.baloot.core.entities.Discount;
 import com.baloot.dataAccess.Database;
+import com.baloot.utils.HibernateUtil;
+import org.hibernate.Session;
 
 public class DiscountRepository {
     private final Database database;
@@ -11,11 +13,11 @@ public class DiscountRepository {
     }
 
     public Discount getDiscount(String discountCode) {
-        for (Discount discount : database.getDiscounts()) {
-            if (discount.getDiscountCode().equals(discountCode)) {
-                return discount;
-            }
-        }
-        return null;
+        if (discountCode == null)
+            return null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        var discount  = session.get(Discount.class, discountCode);
+        session.close();
+        return discount;
     }
 }

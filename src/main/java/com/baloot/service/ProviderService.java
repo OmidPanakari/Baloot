@@ -10,6 +10,7 @@ import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
 import com.baloot.service.models.CommodityItemModel;
 import com.baloot.service.models.CommodityModel;
+import com.baloot.service.models.Converter;
 
 import java.util.stream.Collectors;
 
@@ -22,13 +23,6 @@ public class ProviderService {
         this.userRepository = userRepository;
     }
 
-    public Response addProvider(Provider provider) {
-        if (providerRepository.findProvider(provider.getId()) != null)
-            return DataResponse.Failed("Provider id is taken!");
-        providerRepository.addProvider(provider);
-        return DataResponse.Successful();
-    }
-
     public Response getProviderById(int providerId, String username) {
         Provider provider = providerRepository.findProvider(providerId);
         var user = userRepository.findUser(username);
@@ -37,27 +31,6 @@ public class ProviderService {
         if (provider == null) {
             return DataResponse.Failed("Provider not found!");
         }
-        return DataResponse.Successful(convertToModel(provider, user));
-    }
-
-    private CommodityItemModel convertToModel(Commodity commodity, User user) {
-        var item = user.getBuyList().stream()
-            .filter(c -> c.getCommodity().getId() == commodity.getId())
-            .findFirst()
-            .orElse(null);
-        int inCart = (item == null) ? 0 : item.getInCart();
-        return new CommodityItemModel(convertToModel(commodity), inCart);
-    }
-
-    private CommodityModel convertToModel(Commodity commodity) {
-        return new CommodityModel(commodity.getId(), commodity.getName(), commodity.getPrice(), commodity.getImage(),
-            commodity.getRating(), commodity.getRateCount(), commodity.getInStock(), commodity.getProvider().getName(),
-            commodity.getProvider().getId(), commodity.getCategories());
-    }
-
-    private ProviderModel convertToModel(Provider provider, User user) {
-        var commodities = provider.getCommodities().stream().map(c -> convertToModel(c, user))
-            .collect(Collectors.toList());
-        return new ProviderModel(provider, commodities);
+        return DataResponse.Successful(Converter.convertToModel(provider, user));
     }
 }

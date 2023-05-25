@@ -24,9 +24,9 @@ public class Commodity {
     private List<String> categories;
     @Getter
     private String image;
-    @Getter
+    @Transient
     private double rating;
-    @Getter
+    @Transient
     private int rateCount;
     @Getter @Setter
     private int inStock;
@@ -66,11 +66,13 @@ public class Commodity {
         ratings.add(commodityRating);
     }
 
-    public void updateRating(CommodityRating commodityRate) {
-        rateCount = ratings.size();
-        rating = ratings.stream().mapToDouble(CommodityRating::getRating).sum() / rateCount;
+    public double getRating() {
+        if (ratings.size() == 0)
+            return 0;
+        return ratings.stream().mapToDouble(CommodityRating::getRating).sum() / ratings.size();
     }
-    public boolean isInList(String category){
-        return categories.stream().anyMatch(c -> c.toLowerCase().contains(category.toLowerCase()));
+
+    public int getRateCount() {
+        return ratings.size();
     }
 }
