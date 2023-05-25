@@ -45,6 +45,7 @@ public class Converter {
             c.getInCart())).toList();
         var purchased = user.getPurchased().stream().map(c -> new CommodityItemModel(convertToModel(c.getCommodity()),
             c.getInCart())).toList();
-        return new UserModel(user.getUsername(), user.getCredit(), user.getEmail(), user.getAddress(), buyList, purchased);
+        return new UserModel(user.getUsername(), user.getCredit(), user.getEmail(), user.getAddress(),
+            user.getBirthDate(), buyList, purchased);
     }
 }
