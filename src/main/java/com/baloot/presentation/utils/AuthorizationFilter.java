@@ -13,7 +13,7 @@ import java.io.IOException;
 public class AuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getRequestURI().equals("/auth/login") || request.getRequestURI().equals("/users/"))
+        if (request.getRequestURI().equals("/auth/login") || request.getRequestURI().equals("/users/") || request.getRequestURI().equals("/users/oAuth"))
         {
             filterChain.doFilter(request, response);
             return;

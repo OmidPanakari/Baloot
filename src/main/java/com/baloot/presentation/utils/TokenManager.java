@@ -18,13 +18,14 @@ public class TokenManager {
     private static final String SECRET = "357538782F413F4428472B4B6250655368566D59713374367639792442264529";
     public static String generateToken(String username, Map<String, Object> claims) {
         return Jwts
-            .builder()
-            .setClaims(claims)
-            .setSubject(username)
-            .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
-            .signWith(getKey())
-            .compact();
+                .builder()
+                .setClaims(claims)
+                .setSubject(username)
+                .setIssuer("baloot")
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .signWith(getKey())
+                .compact();
     }
 
     public static String generateToken(String username) {
@@ -47,19 +48,18 @@ public class TokenManager {
     public static boolean isTokenValid(String token) {
         try {
             return (token != null && extractExpirationDate(token).after(new Date(System.currentTimeMillis())));
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return false;
         }
     }
 
     private static Claims extractAllClaims(String token) {
         return Jwts
-            .parserBuilder()
-            .setSigningKey(getKey())
-            .build()
-            .parseClaimsJws(token)
-            .getBody();
+                .parserBuilder()
+                .setSigningKey(getKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     private static Key getKey() {

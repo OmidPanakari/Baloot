@@ -1,6 +1,7 @@
 package com.baloot.dataAccess;
 
 import com.baloot.core.entities.*;
+import com.baloot.dataAccess.utils.HashHelper;
 import com.baloot.utils.HibernateUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -12,6 +13,7 @@ import org.hibernate.Transaction;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,12 +31,12 @@ public class Database {
             for (int i = 0; i < element.size(); i++) {
                 var userJson = element.get(i).getAsJsonObject();
                 var user = new User(
-                    userJson.get("password").getAsString(),
-                    userJson.get("username").getAsString(),
-                    userJson.get("email").getAsString(),
-                    userJson.get("address").getAsString(),
-                    userJson.get("birthDate").getAsString(),
-                    userJson.get("credit").getAsInt());
+                        HashHelper.DoubleSha256(userJson.get("password").getAsString()),
+                        userJson.get("username").getAsString(),
+                        userJson.get("email").getAsString(),
+                        userJson.get("address").getAsString(),
+                        userJson.get("birthDate").getAsString(),
+                        userJson.get("credit").getAsInt());
                 session.saveOrUpdate(user);
             }
             transaction.commit();
@@ -44,10 +46,10 @@ public class Database {
             for (int i = 0; i < element.size(); i++) {
                 var providerJson = element.get(i).getAsJsonObject();
                 var provider = new Provider(
-                    providerJson.get("id").getAsInt(),
-                    providerJson.get("name").getAsString(),
-                    providerJson.get("registryDate").getAsString(),
-                    providerJson.get("image").getAsString());
+                        providerJson.get("id").getAsInt(),
+                        providerJson.get("name").getAsString(),
+                        providerJson.get("registryDate").getAsString(),
+                        providerJson.get("image").getAsString());
                 session.saveOrUpdate(provider);
             }
             transaction.commit();
@@ -57,8 +59,8 @@ public class Database {
             for (int i = 0; i < element.size(); i++) {
                 var discountJson = element.get(i).getAsJsonObject();
                 var discount = new Discount(
-                    discountJson.get("discountCode").getAsString(),
-                    discountJson.get("discount").getAsInt());
+                        discountJson.get("discountCode").getAsString(),
+                        discountJson.get("discount").getAsInt());
                 session.saveOrUpdate(discount);
             }
             transaction.commit();
@@ -68,13 +70,14 @@ public class Database {
             for (int i = 0; i < element.size(); i++) {
                 var commodityJson = element.get(i).getAsJsonObject();
                 var commodity = new Commodity(
-                    commodityJson.get("id").getAsInt(),
-                    commodityJson.get("name").getAsString(),
-                    commodityJson.get("price").getAsInt(),
-                    commodityJson.get("inStock").getAsInt(),
-                    commodityJson.get("providerId").getAsInt(),
-                    gson.fromJson(commodityJson.get("categories"), new TypeToken<List<String>>() {}.getType()),
-                    commodityJson.get("image").getAsString());
+                        commodityJson.get("id").getAsInt(),
+                        commodityJson.get("name").getAsString(),
+                        commodityJson.get("price").getAsInt(),
+                        commodityJson.get("inStock").getAsInt(),
+                        commodityJson.get("providerId").getAsInt(),
+                        gson.fromJson(commodityJson.get("categories"), new TypeToken<List<String>>() {
+                        }.getType()),
+                        commodityJson.get("image").getAsString());
                 session.saveOrUpdate(commodity);
             }
             transaction.commit();
@@ -87,10 +90,10 @@ public class Database {
                 query.setParameter("email", commentJson.get("userEmail").getAsString());
                 var user = (User) query.uniqueResult();
                 var comment = new Comment(
-                    user.getUsername(),
-                    commentJson.get("commodityId").getAsInt(),
-                    commentJson.get("text").getAsString(),
-                    commentJson.get("date").getAsString());
+                        user.getUsername(),
+                        commentJson.get("commodityId").getAsInt(),
+                        commentJson.get("text").getAsString(),
+                        commentJson.get("date").getAsString());
                 session.saveOrUpdate(comment);
             }
             transaction.commit();

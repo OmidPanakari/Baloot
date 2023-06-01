@@ -25,7 +25,7 @@ public class UserRepository {
         session.close();
     }
 
-    private void updateUser(User oldUser, User newUser){
+    public void updateUser(User oldUser, User newUser){
         oldUser.setCredit(newUser.getCredit());
         oldUser.setEmail(newUser.getEmail());
         oldUser.setAddress(newUser.getAddress());
@@ -36,6 +36,15 @@ public class UserRepository {
     public User findUser(String username){
         Session session = HibernateUtil.getSessionFactory().openSession();
         var user = session.get(User.class, username);
+        session.close();
+        return user;
+    }
+
+    public User findUserByEmail(String email){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        var query = session.createQuery("FROM User u WHERE u.email = :email", User.class);
+        query.setParameter("email", email);
+        var user = (User) query.uniqueResult();
         session.close();
         return user;
     }

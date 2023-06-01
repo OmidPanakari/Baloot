@@ -1,10 +1,8 @@
 package com.baloot.presentation.controllers;
 
 import com.baloot.core.entities.User;
-import com.baloot.presentation.models.AddCreditModel;
-import com.baloot.presentation.models.UpdateCartModel;
-import com.baloot.presentation.models.VoteModel;
-import com.baloot.presentation.models.signupModel;
+import com.baloot.dataAccess.utils.HashHelper;
+import com.baloot.presentation.models.*;
 import com.baloot.presentation.utils.Container;
 import com.baloot.responses.DataResponse;
 import com.baloot.responses.Response;
@@ -64,7 +62,12 @@ public class UserController {
         var service = Container.resolve(UserService.class);
         if (!Objects.equals(model.password(), model.confirmPassword()))
             return DataResponse.Failed("Passwords are not the same!");
-        return service.addUser(new User(model.password(), model.username(), model.email(), model.address(),
+        return service.addUser(new User(HashHelper.DoubleSha256(model.password()), model.username(), model.email(), model.address(),
                 model.birthDate(), 0));
+    }
+    @PostMapping("/oAuth")
+    public Response signupCallback(@RequestBody OAuthModel model) {
+        var service = Container.resolve(UserService.class);
+        return service.githubOAuth(model.code());
     }
 }
