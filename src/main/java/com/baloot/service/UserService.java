@@ -133,12 +133,6 @@ public class UserService {
         return DataResponse.Successful();
     }
 
-    private boolean isUserValid(User user) {
-        Pattern userNamePattern = Pattern.compile("[a-zA-Z0-9]+");
-        Matcher userNameMatcher = userNamePattern.matcher(user.getUsername());
-        return userNameMatcher.matches();
-    }
-
     public Response githubOAuth(String code){
         String accessToken = "";
         GithubUserModel user = null;
@@ -198,12 +192,18 @@ public class UserService {
         }
 
         var tempUser = userRepository.findUserByEmail(user.email);
-        User newUser = new User(HashHelper.DoubleSha256("1234"), user.login, user.name, "Tehran", user.created_at, 0);
+        User newUser = new User(HashHelper.DoubleSha256("1234"), user.login, user.email, "Tehran", user.created_at, 0);
         if (tempUser == null){
             userRepository.addUser(newUser);
         } else {
             userRepository.updateUser(tempUser, newUser);
         }
         return DataResponse.Successful(TokenManager.generateToken(newUser.getUsername()));
+    }
+
+    private boolean isUserValid(User user) {
+        Pattern userNamePattern = Pattern.compile("[a-zA-Z0-9]+");
+        Matcher userNameMatcher = userNamePattern.matcher(user.getUsername());
+        return userNameMatcher.matches();
     }
 }
