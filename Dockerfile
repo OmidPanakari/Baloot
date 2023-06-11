@@ -1,15 +1,18 @@
-FROM adoptopenjdk/openjdk19:alpine-jre as build
+FROM openjdk:19-jdk-slim as build
+
+RUN apt-get update && \
+    apt-get install -y maven
 
 WORKDIR /app
 
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
+RUN mvn -Dhttps.protocols=TLSv1.2 package
 
 COPY src ./src
 
 RUN mvn package -DskipTests
 
-FROM adoptopenjdk/openjdk19:alpine-jre
+FROM openjdk:19-jdk-slim
 
 WORKDIR /app
 
