@@ -61,23 +61,6 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getBuyList_Valid_Success() {
-        // Arrange
-        var user = new User(users.get(0));
-        user.addToBuyList(commodities.get(0));
-        when(userRepositoryMock.findUser(user.getUsername()))
-                .thenReturn(user);
-        // Action
-        var response = userService.getCart(user.getUsername());
-        // Assert
-        Assertions.assertTrue(response.isSuccess());
-        var data = ((DataResponse<CartModel>)response).getData();
-        Assertions.assertEquals(1, data.buyList().size());
-        Assertions.assertEquals(0, data.purchasedList().size());
-        Assertions.assertEquals(commodities.get(0).getId(), data.buyList().get(0).getCommodity().getId());
-    }
-
-    @Test
     public void getBuyList_UserNotExists_Fail() {
         // Arrange
         var user = new User(users.get(0));

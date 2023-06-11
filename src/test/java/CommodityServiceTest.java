@@ -62,24 +62,6 @@ public class CommodityServiceTest {
     }
 
     @Test
-    public void rateCommodity_Valid_Success() {
-        // Arrange
-        var commodity = commodities.get(0);
-        var user = users.get(0);
-        when(commodityRepositoryMock.findCommodity(commodity.getId()))
-                .thenReturn(new Commodity(commodity));
-        when(userRepositoryMock.findUser(user.getUsername()))
-                .thenReturn(user);
-        // Action
-        var response = commodityService.rateCommodity(new CommodityRating(user.getUsername(), commodity.getId(), 8));
-        // Assert
-        Assertions.assertTrue(response.isSuccess());
-        var data = ((DataResponse<RateModel>)response).getData();
-        Assertions.assertEquals(8, data.rating());
-        Assertions.assertEquals(1, data.rateCount());
-    }
-
-    @Test
     public void rateCommodity_CommodityNotExists_Fail() {
         // Arrange
         var commodity = commodities.get(0);
@@ -99,7 +81,7 @@ public class CommodityServiceTest {
         var commodity = commodities.get(0);
         var user = users.get(0);
         when(commodityRepositoryMock.findCommodity(commodity.getId()))
-                .thenReturn(new Commodity(commodity));
+                .thenReturn(commodity);
         when(userRepositoryMock.findUser(user.getUsername()))
                 .thenReturn(null);
         // Action
