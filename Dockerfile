@@ -1,23 +1,16 @@
-FROM openjdk:19-jdk-slim as build
-
-RUN apt-get update && \
-    apt-get install -y maven
+FROM maven:3.8.7-openjdk-18-slim AS build
 
 WORKDIR /app
-
-COPY pom.xml .
-RUN mvn -Dhttps.protocols=TLSv1.2 package
 
 COPY src ./src
+COPY pom.xml .
 
-RUN mvn package -DskipTests
+RUN mvn clean package
 
-FROM openjdk:19-jdk-slim
-
-WORKDIR /app
+FROM eclipse-temurin:latest
 
 COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
