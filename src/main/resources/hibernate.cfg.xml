@@ -5,7 +5,7 @@
     <session-factory>
         <!-- Database connection settings -->
         <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="connection.url">jdbc:mysql://localhost:3306/test?useSSL=false&amp;serverTimezone=UTC</property>
+        <property name="connection.url">jdbc:mysql://host.docker.internal:3306/test?useSSL=false&amp;serverTimezone=UTC</property>
         <property name="connection.username">root</property>
         <property name="connection.password">(mysecret123)</property>
 
